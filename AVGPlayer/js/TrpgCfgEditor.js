@@ -4,6 +4,7 @@ var MSG = {
 	"btn_generalCfg": "團錄設定",
 	"btn_actorCfg": "角色設定",
 	"btn_scriptCfg": "腳本設定",
+	"btn_information": "說明",
 	"btn_save": "儲存",
 	"btn_apply": "確定",
 	"btn_preview": "預覽",
@@ -18,8 +19,14 @@ var MSG = {
 	"Title_ScriptMethodList": "編輯腳本功能",
 	"Title_EditBgImg": "設定背景圖片",
 	"Title_EditTalk": "設定對話",
-	"introDoc": `這個工具能夠將 どどんとふ 和 CCFolia 輸出的團錄轉換成播放器可用的格式。<ul>
-		<li>先使用左上角的「匯入團錄」將團錄文件匯入工具中。</li>
+	"introDoc": `<u>此工具以及輸出成品皆使用 CC-BY 4.0 授權，可以自由散佈使用。</u>
+		<p>此工具能夠將其他跑團平台輸出的團錄轉換成播放器可用的格式。<br/>
+		目前支援的格式：
+		<ul><li>此工具輸出的文件 (.arp/.html)</li>
+		<li>どどんとふ (.html)</li>
+		<li>ccfolia (.html)</li></ul></p>
+		使用流程：
+		<ul><li>先使用左上角的「匯入團錄」將團錄文件匯入工具中。</li>
 		<li>利用「團錄設定」可以設定輸出檔的標題。</li>
 		<li>利用「角色設定」可以設定團錄中登場人物的代表色跟頭像。</li>
 		<li>利用「腳本設定」可以編輯團錄內容並加入播放特效。</li>
@@ -54,7 +61,8 @@ var MSG = {
 	"Tip_selectActor": "請點選左側的登場角色進行個別設定。",
 	"Tip_editScript": "請使用左側功能編輯你的團錄。",
 	"fileType_ARP": ".arp (團錄播放器專用格式)",
-	"fileType_HTML": ".html (網頁格式)",
+	"fileType_HTML_simple": ".html (網頁格式, 簡易版)",
+	"fileType_HTML_standard": ".html (網頁格式, 標準版)",
 };
 
 class CfgEditor {
@@ -78,7 +86,7 @@ class CfgEditor {
 
 		this.loadFromWebStorage();
 		
-		this.goToPage("index");
+		this.goToPage("info");
 	}
 
 	initConfig(){
@@ -139,19 +147,23 @@ class CfgEditor {
 		if(!this.doLoadedCheck()) return ;
 		this.goToPage("script");
 	}
+	clickGoToInfo(){
+		this.goToPage("info");
+	}
 
 	//============
 	// Page Handler
 	goToPage(pageId){
 		this.clearPage();
 		switch(pageId){
-			case "index":   this.goToPage_index(); break;
+			case "info":    this.goToPage_info(); break;
 			case "general": this.goToPage_general(); break;
 			case "actor":   this.goToPage_actor(); break;
 			case "script":  this.goToPage_script(); break;
 		}
 	}
-	goToPage_index(){
+	goToPage_info(){
+		$("#btn_to_info").addClass("active");
 		$("#_rightCol").append(builder.pageR_intro());
 	}
 	goToPage_general(){
@@ -526,6 +538,8 @@ class CfgEditor {
 		$("#btn_to_general").on('click',this.clickGoToGeneral.bind(this));
 		$("#btn_to_actor").on('click',  this.clickGoToActor.bind(this));
 		$("#btn_to_script").on('click', this.clickGoToScript.bind(this));
+
+		$("#btn_to_info").on('click', this.clickGoToInfo.bind(this));
 	}
 	//=================
 	// Message Box
@@ -587,7 +601,8 @@ class CfgEditor {
 		elem.click();
 	}
 	previewReplay(){
-		var exportData = this.exporter.Export("HTML", this);
+		var mode = (this.generalCfg.exportType=="HTML_SIMPLE")? "HTML_SIMPLE": "HTML_STD";
+		var exportData = this.exporter.Export(mode, this);
 		var w = window.open('');
 		w.document.write(exportData.fileData);
 	}

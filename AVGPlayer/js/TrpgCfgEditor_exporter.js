@@ -5,8 +5,9 @@ class CfgExporter {
 
 	Export(mode, cfgData){
 		switch(mode){
-			case "ARP": return this._exportArpFile(cfgData);
-			case "HTML": return this._exportHtmlFile(cfgData);
+			case "ARP":         return this._exportArpFile(cfgData);
+			case "HTML_SIMPLE": return this._exportHtmlFile(cfgData, 'simple');
+			case "HTML_STD":    return this._exportHtmlFile(cfgData, 'standard');
 		}
 	}
 
@@ -26,21 +27,27 @@ class CfgExporter {
 			fileData: JSON.stringify(filedata)
 		};
 	}
-	_exportHtmlFile(cfgData){
+
+	_exportHtmlFile(cfgData, mode){
 		var title = cfgData.generalCfg.title;
+		var isOnlyMainCh = cfgData.generalCfg.isOnlyMainCh;
 		var actorMap = cfgData.actorCfg;
 		var scriptArr = cfgData.scriptCfg;
 		
 		var self = this;
 		var filename = `${title}.html`;
-		var style = Object.values(actorMap).map( actorObj => this.getActorStyle(actorObj) ).join('\n');
+
+		var extraStyle = Object.values(actorMap).map( actorObj => this.getActorStyle(actorObj) ).join('\n');
+		if(isOnlyMainCh){
+			extraStyle += '\n.otherCh{ display:none; }';
+		}
 		var body = scriptArr
-			.filter( script => !cfgData.generalCfg.isOnlyMainCh || script.channel != "other" )
+			//.filter( script => !cfgData.generalCfg.isOnlyMainCh || script.channel != "other" )
 			.map( script => this.getScriptEntry(actorMap, script) ).join('\n');
 
 		return {
 			fileName: filename,
-			fileData: this.getBasicWebStruct(title, style, body),
+			fileData: this.getBasicWebStruct(mode, title, "", extraStyle, body),
 		};
 	}
 
@@ -54,6 +61,8 @@ class CfgExporter {
 		var type = scriptObj.type;
 		switch(type){
 			case "talk": return talkCmd(actorMap, scriptObj);
+			case "halt": return `<div class="_halt" data-type="halt"></div>`;
+			case "changeBg": return `<div class="_hidden" data-type="changeBg">${scriptObj.bgUrl}</div>`;
 			default:
 				return `<div class="_hidden" data-type="${type}"></div>`;
 		}
@@ -76,16 +85,18 @@ class CfgExporter {
 			</div>`
 		}
 	}
-	getBasicWebStruct(title, actorStyle, body){
-		return `
-			<html>
-				<head>
-					<title>${title}</title>
-					<style>
-	._hidden { display:none; }
-	.center { display:flex; flex-direction:column; align-items:center; }
-	#_main { display:flex; flex-direction:column; align-items:end; }
-	._talk { margin:10px 0; display:flex; border:1px solid black; background:#1e1e1e; width:100%; max-width:1080px; border-radius:5px; }
+	getStyle(type){
+		switch(type){
+			case "simple": return simpleWebStyle();
+			case "standard": return standardWebStyle();
+		}
+		return '';
+
+		//=======
+		function standardWebStyle(){
+			return `
+	._halt { margin:20px 0; }
+	._talk { margin:5px 0; display:flex; border:1px solid black; background:#1e1e1e; width:100%; max-width:1080px; border-radius:5px; }
 	._leftCol { width:122px; }
 	._rightCol { width:calc(100% - 126px); }
 	._actorName{ padding:5px 10px; height:16px; font-size:18px; }
@@ -96,20 +107,52 @@ class CfgExporter {
 	._talk.otherCh ._leftCol { display:none; }
 	._talk.otherCh ._rightCol { width:100%; }
 	._talk.otherCh ._actorWords { background:black;color:white; }
+			`.fmt();
+		}
+		function simpleWebStyle(){
+			return `
+	._halt { margin:40px 0; }
+	._talk { margin:0; display:flex; border-bottom:1px solid #3a3a3a; background:#1e1e1e; color:#eee; width:100%; max-width:1080px; }
+	._leftCol { width: 20px; }
+	._rightCol { width:100%; }
+	._actorName{ padding:10px; height:16px; font-size:18px; }
+	._actorImg { display:none; }
+	._actorWords { margin:5px; font-size:1.1rem; padding:0 10px 10px 10px; border-radius:5px; }
 
-	body{ background:#4f545e; }
-	h1{ color:white; }
+	._talk.otherCh { text-align:right; background:black; }
+	._talk.otherCh ._actorWords { background:black;color:white; }
+			`.fmt();
+		}
+	}
+	getBasicWebStruct(mode, title, subtitle, actorStyle, body){
+		return `
+			<html>
+				<head>
+					<meta charset="utf-8">
+					<meta property="og:title" content="${title}">
+					<meta property="og:description" content="${subtitle}">
+					<title>${title}</title>
+					<style>
+						h1{ color:white; margin: 5px 0; }
+						body{ background:#454752; }
+						._subtitle { color:#ddd; margin: 5px 0 20px 0; }
+						._hidden { display:none; }
+						.center { display:flex; flex-direction:column; align-items:center; }
+						#_main { display:flex; flex-direction:column; align-items:end; }
+
+						${this.getStyle(mode)}
 						${actorStyle}
 					</style>
 				</head>
 				<body class="center">
-					<h1>${title}</h1>
 					<div class="_hidden">
 						<version>${VERSION}</version>
 					</div>
-					<div id="_main">
-					${body}
-					</div>
+					
+					<h1>${title}</h1>
+					<div class="_subtitle">${subtitle}</div>
+
+					<div id="_main">${body}</div>
 				</body>
 			</html>`.fmt();
 	}

@@ -55,10 +55,17 @@
 #_toolbar #btn_to_general ._icon { background-image: url("../image/icons/cog.png"); }
 #_toolbar #btn_to_actor ._icon { background-image: url("../image/icons/mona-lisa.png"); }
 #_toolbar #btn_to_script ._icon { background-image: url("../image/icons/open-book.png"); }
+#_toolbar #btn_to_info ._icon { background-image: url("../image/icons/info.png"); }
 #_toolbar #_sign {
 	color: #d1d1d1;
 	font-style: italic;
 	padding: .5rem;
+}
+#_toolbar #_logo {
+	width: 75px; height: 75px;
+	background-image: url("../image/icons/favicon.png");
+	background-size: contain;
+	background-repeat: no-repeat;
 }
 
 /* Message Bar */
@@ -203,6 +210,9 @@
 	text-align: right;
 	font-weight: bold;
 }
+._entry_content {
+	width: calc(100% - 120px);
+}
 
 
 /* Script */
@@ -304,5 +314,6 @@
 .vcneter { display: flex; align-items: center; }
 .fullWidth { width: 100%; }
 input[type=text] { height: 25px; }
+input[type=text].long { width: 100%; }
 input[type=checkbox] { height: 18px; width: 18px; margin: 0 8px; }
 select { height: 25px; }

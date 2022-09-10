@@ -6,7 +6,7 @@ var MSG = {
 	"Autoplay_disable": "關閉自動播放",
 	"Error_EmptyConfig": "錯誤！尚未匯入團錄文件！",
 	"Error_WrongFileFormat": "錯誤！檔案格式有誤！",
-	"PressSpaceToStart": "請按下[空白鍵]開始...",
+	"PressSpaceToStart": "請按下[Z]開始...",
 	"Tip_ImportFile": "匯入團錄文件",
 	"Tip_Autoplay": "自動播放",
 	"Tip_Restart": "重新開始",
@@ -83,8 +83,9 @@ class SceneCtrl {
 
 	
 	handleUserInput(e){
+		var isPressZ = (e.which == 122);
 		var isPressSpace = (e.which == 32);
-		if(!isPressSpace) return;
+		if(!isPressSpace && !isPressZ) return;
 		
 	    switch(this.state){
 	    	case "disabled": break;

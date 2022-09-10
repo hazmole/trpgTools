@@ -16,10 +16,11 @@ builder.pageR_generalCfg = function(generalCfg){
 	var exportType = generalCfg.exportType;
 	return `
 		<h2>${MSG["btn_generalCfg"]}</h2>
-		<div class="row"><b>${MSG["replatTitle"]}</b>：<input type="text" id="_input_title" value="${title}"></div>
+		<div class="row"><b>${MSG["replatTitle"]}</b>：<input type="text" id="_input_title" value="${title}" style="width:280px;"></div>
 		<div class="row"><b>${MSG["exportFormat"]}</b>：<select id="_input_exportType">
-				<option value="ARP" ${ exportType=="ARP"? "selected": "" }>${MSG["fileType_ARP"]}</option>
-				<option value="HTML" ${ exportType=="HTML"? "selected": "" }>${MSG["fileType_HTML"]}</option>
+				<option value="ARP"         ${ exportType=="ARP"? "selected": "" }>${MSG["fileType_ARP"]}</option>
+				<option value="HTML_SIMPLE" ${ exportType=="HTML_SIMPLE"? "selected": "" }>${MSG["fileType_HTML_simple"]}</option>
+				<option value="HTML_STD"    ${ exportType=="HTML"? "selected": "" }>${MSG["fileType_HTML_standard"]}</option>
 			</select>
 		</div>
 		<div class="row"><b>${MSG["otherOptions"]}：</b></div>
@@ -67,7 +68,10 @@ builder.subpage_actorEditPage = function(actorObj){
 						<div><input type="color" id="_input_actorColor" value="#${actorObj.color}"></div>
 					</div>
 				</div>
-				<div class="row flex"><div class="_entry_title">${MSG["actor_headImg_url"]}：</div><div><input type="text" id="_input_actorHeadImgUrl" value="${imgUrl}"></div></div>
+				<div class="row flex">
+					<div class="_entry_title">${MSG["actor_headImg_url"]}：</div>
+					<div class="_entry_content"><input class="long" type="text" id="_input_actorHeadImgUrl" value="${imgUrl}"></div>
+				</div>
 			</div>
 		</div>
 		<div class="row right"><button id="_btn_saveActorCfg" class="_btn_save">${MSG["btn_save"]}</button></div>`.fmt();
@@ -220,7 +224,9 @@ builder.mainFrame = function(){
 				</div>
 			</div>
 			<div id='_toolbar_rightGroup'>
-				<div id="_sign">by. Hazmole</div>
+					<div id="btn_to_info" class="_btn clickable">
+						<div class="_icon"></div><div class="_label">${MSG["btn_information"]}</div>
+					</div>
 			</div>
 		</div>
 		<div id="_workspace">
