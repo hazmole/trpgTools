@@ -205,7 +205,7 @@ class SceneCtrl {
 		var elem = document.createElement('input');
 		elem.type = "file";
 		elem.id = "_sceneFile";
-		elem.setAttribute("accept", ".arp");
+		elem.setAttribute("accept", ".hzrp");
 		document.body.append(elem);
 
 		var self = this;

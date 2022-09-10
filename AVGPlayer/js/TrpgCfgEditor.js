@@ -22,7 +22,7 @@ var MSG = {
 	"introDoc": `<u>此工具以及輸出成品皆使用 CC-BY 4.0 授權，可以自由散佈使用。</u>
 		<p>此工具能夠將其他跑團平台輸出的團錄轉換成播放器可用的格式。<br/>
 		目前支援的格式：
-		<ul><li>此工具輸出的文件 (.arp/.html)</li>
+		<ul><li>此工具輸出的文件 (.html, .hzrp)</li>
 		<li>どどんとふ (.html)</li>
 		<li>ccfolia (.html)</li></ul></p>
 		使用流程：
@@ -60,7 +60,7 @@ var MSG = {
 	"Success_SaveCfg": "設定已儲存！",
 	"Tip_selectActor": "請點選左側的登場角色進行個別設定。",
 	"Tip_editScript": "請使用左側功能編輯你的團錄。",
-	"fileType_ARP": ".arp (團錄播放器專用格式)",
+	"fileType_HZRP": ".hzrp (團錄播放器專用格式)",
 	"fileType_HTML_simple": ".html (網頁格式, 簡易版)",
 	"fileType_HTML_standard": ".html (網頁格式, 標準版)",
 };
@@ -93,7 +93,7 @@ class CfgEditor {
 		this.generalCfg = {
 			title: this.parser.GetTitle(),
 			isOnlyMainCh: this.parser.GetGeneralCfg().isOnlyMainCh,
-			exportType: "ARP",
+			exportType: "HZRP",
 		};
 		this.actorCfg = this.parser.GetActorList();
 		this.scriptCfg = this.parser.GetScript();
@@ -610,7 +610,7 @@ class CfgEditor {
 		var elem = document.createElement('input');
 		elem.type = "file";
 		elem.id = "_uploadFile";
-		elem.setAttribute("accept", ".html,.arp");
+		elem.setAttribute("accept", ".html,.hzrp");
 		document.body.append(elem);
 
 		var self = this;

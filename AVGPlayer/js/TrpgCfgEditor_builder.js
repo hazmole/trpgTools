@@ -18,7 +18,7 @@ builder.pageR_generalCfg = function(generalCfg){
 		<h2>${MSG["btn_generalCfg"]}</h2>
 		<div class="row"><b>${MSG["replatTitle"]}</b>：<input type="text" id="_input_title" value="${title}" style="width:280px;"></div>
 		<div class="row"><b>${MSG["exportFormat"]}</b>：<select id="_input_exportType">
-				<option value="ARP"         ${ exportType=="ARP"? "selected": "" }>${MSG["fileType_ARP"]}</option>
+				<option value="HZRP"        ${ exportType=="HZRP"? "selected": "" }>${MSG["fileType_HZRP"]}</option>
 				<option value="HTML_SIMPLE" ${ exportType=="HTML_SIMPLE"? "selected": "" }>${MSG["fileType_HTML_simple"]}</option>
 				<option value="HTML_STD"    ${ exportType=="HTML"? "selected": "" }>${MSG["fileType_HTML_standard"]}</option>
 			</select>

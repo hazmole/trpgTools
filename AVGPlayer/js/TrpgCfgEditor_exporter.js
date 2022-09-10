@@ -5,14 +5,14 @@ class CfgExporter {
 
 	Export(mode, cfgData){
 		switch(mode){
-			case "ARP":         return this._exportArpFile(cfgData);
+			case "HZRP":         return this._exportHzrpFile(cfgData);
 			case "HTML_SIMPLE": return this._exportHtmlFile(cfgData, 'simple');
 			case "HTML_STD":    return this._exportHtmlFile(cfgData, 'standard');
 		}
 	}
 
-	_exportArpFile(cfgData){
-		var filename = `${cfgData.generalCfg.title}.arp`;
+	_exportHzrpFile(cfgData){
+		var filename = `${cfgData.generalCfg.title}.hzrp`;
 		var filedata = {
 				version: VERSION,
 				config: {
@@ -59,22 +59,28 @@ class CfgExporter {
 	}
 	getScriptEntry(actorMap, scriptObj){
 		var type = scriptObj.type;
+		var innerHtml = '';
 		switch(type){
-			case "talk": return talkCmd(actorMap, scriptObj);
-			case "halt": return `<div class="_halt" data-type="halt"></div>`;
-			case "changeBg": return `<div class="_hidden" data-type="changeBg">${scriptObj.bgUrl}</div>`;
-			default:
-				return `<div class="_hidden" data-type="${type}"></div>`;
+			case "talk": innerHtml = talkCmd(actorMap, scriptObj); break;
+			case "halt": innerHtml = haltCmd(); break;
+			case "changeBg": innerHtml = bgCmd(); break;
 		}
+		return `<div class="_script" data-type="${type}">${innerHtml}</div><!--EOS-->`;
 
 		//=================
+		function haltCmd(){
+			return `<div class="_halt"></div>`;
+		}
+		function bgCmd(){
+			return `<div class="_hidden">${scriptObj.bgUrl}</div>`;
+		}
 		function talkCmd(actorMap, scriptObj){
 			var id = scriptObj.actorId;
 			var actorObj = actorMap[id];
 			var imgUrl = actorObj.imgUrl;
 			var chClass = scriptObj.channel=="main"? "mainCh": "otherCh";
 			return `
-			<div class="_talk ${chClass}" data-type="talk">
+			<div class="_talk ${chClass}">
 				<div class="_leftCol">
 					<div class="_actorImg ${imgUrl==""? "_hidden": ""}" style="background-image:url(${imgUrl})"></div>
 				</div>
@@ -139,6 +145,7 @@ class CfgExporter {
 						._hidden { display:none; }
 						.center { display:flex; flex-direction:column; align-items:center; }
 						#_main { display:flex; flex-direction:column; align-items:end; }
+						._script {width: 100%;}
 
 						${this.getStyle(mode)}
 						${actorStyle}
