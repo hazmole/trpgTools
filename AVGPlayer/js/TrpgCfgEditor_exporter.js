@@ -23,7 +23,7 @@ class CfgExporter {
 			};
 		return {
 			fileName: filename,
-			fileData: JSON.stringify(filedata, null, '\t')
+			fileData: JSON.stringify(filedata)
 		};
 	}
 	_exportHtmlFile(cfgData){
