@@ -93,6 +93,7 @@ builder.pageL_scriptMethodList = function(){
 		<div id="_btn_delCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodDel"]}</div>
 		<div id="_btn_delOtherChCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodDelAllOtherCh"]}</div>
 		<div id="_btn_addTalkCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodAddTalk"]}</div>
+		<div id="_btn_addTitleCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodAddTitle"]}</div>
 		<div id="_btn_addChBgCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodAddChangeBg"]}</div>
 		<div id="_btn_addHaltCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodAddHalt"]}</div>`.fmt();
 }
@@ -130,6 +131,9 @@ builder.scriptEntry = function(actorCfg, scriptObj){
 		case "changeBg":
 			elem = builder._scriptEntryInner_changeBg(scriptObj);
 			break;
+		case "sect_title":
+			elem = builder._scriptEntryInner_sectTitle(scriptObj);
+			break;
 		case "halt":
 			elem = builder._scriptEntryInner_halt();
 			break;
@@ -157,6 +161,9 @@ builder._scriptEntryInner_changeBg = function(scriptObj){
 builder._scriptEntryInner_halt = function(){
 	return `<div class="_scriptEntry_specialCmd">${MSG["cmd_halt"]}</div>`;
 }
+builder._scriptEntryInner_sectTitle = function(scriptObj){
+	return `<div class="_scriptEntry_specialCmd">${MSG["section_title"]}：<span>${scriptObj.text}</span></div>`;
+}
 
 /*----------------
   Control Window Content
@@ -177,6 +184,12 @@ builder.ctrlWin_editTalk = function(actorCfg, actorId, content, isOtherCh, isOnl
 			<input type="radio" id="chOther" name="channel" value="other" ${isOtherCh? "checked": ""} ${isOnlyShowMain? "disabled": ""}>${MSG["ch_other"]}
 		</div>
 		<div class="row"><textarea id="_input_content">${content}</textarea></div>`.fmt();
+}
+builder.ctrlWin_editSectTitle = function(text){
+	return `
+		<div class="row"><b>${MSG["section_title"]}：</b>
+			<input type="text" id="_input_section_title" class="long" value="${text}">
+		</div>`.fmt();
 }
 builder._ctrlWin_actorEntry = function(actorObj, isSelected){
 	return `<option value="${actorObj.id}" ${isSelected? "selected": ""}>${actorObj.name}</option>`;

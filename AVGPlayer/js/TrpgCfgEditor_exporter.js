@@ -42,7 +42,6 @@ class CfgExporter {
 			extraStyle += '\n.otherCh{ display:none; }';
 		}
 		var body = scriptArr
-			//.filter( script => !cfgData.generalCfg.isOnlyMainCh || script.channel != "other" )
 			.map( script => this.getScriptEntry(actorMap, script) ).join('\n');
 
 		return {
@@ -65,11 +64,15 @@ class CfgExporter {
 		switch(type){
 			case "talk": innerHtml = talkCmd(actorMap, scriptObj); break;
 			case "halt": innerHtml = haltCmd(); break;
+			case "sect_title": innerHtml = sectTitleCmd(scriptObj.text); break;
 			case "changeBg": innerHtml = bgCmd(); break;
 		}
 		return `<div class="_script" data-type="${type}">${innerHtml}</div><!--EOS-->`;
 
 		//=================
+		function sectTitleCmd(text){
+			return `<div class="_sectTitle">${text}</div>`;
+		}
 		function haltCmd(){
 			return `<div class="_halt"></div>`;
 		}
@@ -104,12 +107,13 @@ class CfgExporter {
 		function standardWebStyle(){
 			return `
 	._halt { padding:30px 0; }
-	._talk { margin:5px 0; display:flex; border:1px solid black; background:#1e1e1e; width:100%; max-width:1080px; border-radius:5px; }
+	._talk { margin:5px 0; display:flex; border:1px solid black; background:#1e1e1e; color:#eee; width:100%; max-width:1080px; border-radius:5px; }
 	._leftCol { width:122px; }
 	._rightCol { width:calc(100% - 126px); }
-	._actorName{ padding:5px 10px; height:16px; font-size:18px; }
+	._actorName{ padding:5px 10px; height:20px; font-size:18px; }
 	._actorImg { margin:6px; width:110px; height:110px; background-repeat:no-repeat; background-size:cover; background-color:#2a2a2a; }
-	._actorWords { margin:5px; background:#e3e3e3; font-size:1.1rem; padding:10px; height:calc(100% - 57px); border-radius:5px; }
+	._actorWords { margin:5px; background:#2a2a2a; font-size:1.1rem; padding:10px; height:calc(100% - 60px); border-radius:5px; }
+	._sectTitle { border-radius:5px; margin-bottom:5px; }
 
 	._talk.otherCh { width:calc(50%); text-align:right; margin-left:auto; }
 	._talk.otherCh ._leftCol { display:none; }
@@ -143,7 +147,8 @@ class CfgExporter {
 					<style>
 						h1{ color:white; margin: 5px 0; }
 						body{ background:#454752; }
-						._subtitle { color:#ddd; margin: 5px 0 20px 0; }
+						._subtitle { color:#ddd; margin:5px 0 20px 0; }
+						._sectTitle { background:#ddd; margin-top:30px; padding:10px;font-weight:bold;font-size:1.3rem;text-align:center; }
 						._hidden { display:none; }
 						.center { display:flex; flex-direction:column; align-items:center; }
 						#_main { display:flex; flex-direction:column; align-items:end; }

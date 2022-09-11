@@ -12,6 +12,7 @@ class TrpgParser{
 			"hzwebFormat": new RegExp(/<div class="_script" data-type="(\w+)">(.*?)<\/div><!--EOS-->/, 'smg'),
 			"hzweb_getTitle": new RegExp(/<title>(.*?)<\/title>/, 's'),
 			"hzweb_getBgImg": new RegExp(/<div class="_hidden">(.*?)<\/div>/, 's'),
+			"hzweb_getSectTitle": new RegExp(/<div class="_sectTitle">(.*?)<\/div>/, 's'),
 			"hzweb_getTalk": new RegExp(/<div class="_talk (.*?) _actor_(\d+)">/, 'sg'),
 			"hzweb_getTalkContent": new RegExp(/<div class="_actorWords">(.*?)<\/div>/, 'smg'),
 		};
@@ -101,7 +102,9 @@ class TrpgParser{
 		//==================
 		function isJSON(data){
 			try{ JSON.parse(data) }
-			catch(e){ return false; }
+			catch(e){ 
+				return false;
+			}
 			return true;
 		}
 		function isHZRP(data){
@@ -205,10 +208,17 @@ class TrpgParser{
 			var info = {};
 			switch(type){
 				case "halt": break;
+				case "sect_title": info = parseInfo_sectTitle(innerData); break;
 				case "changeBg": info = parseInfo_changeBg(innerData); break;
 				case "talk":     info = parseInfo_talk(innerData); break;
 			}
 			return new ScirptLine(type, info);
+		}
+		function parseInfo_sectTitle(data){
+			var text = data.match(self.regList['hzweb_getSectTitle'])[1];
+			return {
+				text: text
+			};
 		}
 		function parseInfo_changeBg(data){
 			var bgImgUrl = data.match(self.regList['hzweb_getBgImg'])[1];
@@ -332,6 +342,9 @@ class ScirptLine {
 				break;
 			case "changeBg":
 				this.bgUrl = info.bgUrl;
+				break;
+			case "sect_title":
+				this.text = info.text;
 				break;
 			case "halt":
 				break;

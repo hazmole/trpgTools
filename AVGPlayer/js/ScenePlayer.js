@@ -29,6 +29,7 @@ class SceneCtrl {
 		this.createToolBar();
 		this.createChatBox();
 		this.createMsgBox();
+		this.createCenterBox();
 		this.createFileImport();
 
 		// Add Listener
@@ -66,6 +67,10 @@ class SceneCtrl {
 				break;
 			case "halt":
 				this.handleHalt();
+				break;
+			case "sect_title":
+				if(!this.isCenterBoxExisted()) this.cmdIndex--;
+				this.handleSectTitle(cmdObj);
 				break;
 			case "changeBg":
 				this.handleChangeBg(cmdObj);
@@ -178,6 +183,16 @@ class SceneCtrl {
 	}
 
 	//===============
+	handleSectTitle(cmdObj){
+		var self = this;
+
+		if(this.isCenterBoxExisted()){
+			this.hideCenterBox();
+		} else {
+			this.hideChatBox();
+			this.showCenterBox('title', cmdObj);
+		}
+	}
 	handleTalkCmd(cmdObj){
 		this.showChatBox();
 		var actorCfg = this.findActorById(cmdObj.actorId);
@@ -237,6 +252,32 @@ class SceneCtrl {
 		setTimeout(function(){
 			$("#_msgbox").fadeOut(200);
 		}, 1200);
+	}
+	//===============
+	createCenterBox(){
+		var elem = `<div id="_centerbox" class=""><div class="innerFrame"><div class="_content"></div></div></div>`;
+		$(this.viewPort).append(elem);
+	}
+	showCenterBox(type, info, callback){
+		$("#_centerbox").removeClass();
+		switch(type){
+			case "title": 
+				$("#_centerbox").addClass("sectTitle");
+				$("#_centerbox ._content").text(info.text);
+				break;
+		}
+
+		$("#_centerbox").fadeIn(500, function(){
+			if(callback) callback();
+		});
+	}
+	hideCenterBox(callback){
+		$("#_centerbox").fadeOut(500, function(){
+			if(callback) callback();
+		});
+	}
+	isCenterBoxExisted(){
+		return $("#_centerbox").css("display")!="none";
 	}
 	//===============
 	createBackground(){

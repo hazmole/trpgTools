@@ -15,12 +15,14 @@ var MSG = {
 	"btn_methodDel": "刪除段落",
 	"btn_methodDelAllOtherCh": "刪除所有場外",
 	"btn_methodAddTalk": "插入：對話",
-	"btn_methodAddChangeBg": "插入：更改背景",
+	"btn_methodAddChangeBg": "插入：設定背景",
 	"btn_methodAddHalt": "插入：停頓",
+	"btn_methodAddTitle": "插入：段落標題",
 	"Title_ActorList": "登場角色列表",
 	"Title_ScriptMethodList": "編輯腳本功能",
 	"Title_EditBgImg": "設定背景圖片",
 	"Title_EditTalk": "設定對話",
+	"Title_EditTitle": "設定段落標題",
 	"introDoc": `<u>此工具以及輸出成品皆使用 CC-BY 4.0 授權，可以自由散佈使用。</u>
 		<p>此工具能夠將其他跑團平台輸出的團錄轉換成播放器可用的格式。<br/>
 		目前支援的格式：
@@ -41,6 +43,7 @@ var MSG = {
 	"talk_actor": "發話角色",
 	"talk_channel": "頻道",
 	"talkTimes": "發話次數",
+	"section_title": "段落標題",
 	"ch_main": "主要",
 	"ch_other": "場外",
 	"actor_id": "ID",
@@ -204,6 +207,7 @@ class CfgEditor {
 		$("#_btn_delCmd").on('click', this.onClick_delScriptCmd.bind(this));
 		$("#_btn_delOtherChCmd").on('click', this.onClick_delAllOtherTalkCmd.bind(this));
 		$("#_btn_addTalkCmd").on('click', this.onClick_addScriptCmd.bind(this, "talk"));
+		$("#_btn_addTitleCmd").on('click',this.onClick_addScriptCmd.bind(this, "sect_title"));
 		$("#_btn_addChBgCmd").on('click', this.onClick_addScriptCmd.bind(this, "changeBg"));
 		$("#_btn_addHaltCmd").on('click', this.onClick_addScriptCmd.bind(this, "halt"));
 	}
@@ -362,6 +366,7 @@ class CfgEditor {
 		switch(cmdType){
 			case "changeBg": editChangeBgCmd(); break;
 			case "talk": editTalkCmd(); break;
+			case "sect_title": editSectTitleCmd(); break;
 			case "halt": break;
 			default:
 				this.popupMsgBox("error", MSG["Error_UnderDeveloping"]);
@@ -401,6 +406,15 @@ class CfgEditor {
 				self.hideCtrlWindow();
 			}.bind(self));
 		}
+		function editSectTitleCmd(){
+			var textElem = $(self.selectedPtr).children().children("span");
+			var text = textElem.text();
+			self.popWindow_editTitle(text, function(){
+				var newTxt = $("#_input_section_title").val();
+				textElem.text(newTxt);
+				self.hideCtrlWindow();
+			}.bind(self));
+		}
 	}
 
 	onClick_addScriptCmd(cmdType){
@@ -414,6 +428,7 @@ class CfgEditor {
 			case "changeBg": addChBgCmd(); break;
 			case "talk": addTalkCmd(); break;
 			case "halt": addHaltCmd(); break;
+			case "sect_title": addTitleCmd(); break;
 			default:
 				this.popupMsgBox("error", MSG["Error_UnderDeveloping"]);
 				break;
@@ -452,6 +467,16 @@ class CfgEditor {
 				type: "halt"
 			};
 			self.insertScriptEntry(self.selectedPtr, scriptObj);
+		}
+		function addTitleCmd(){
+			self.popWindow_editTitle("", function(){
+				var scriptObj = {
+					type: "sect_title",
+					text: $("#_input_section_title").val(),
+				};
+				self.insertScriptEntry(self.selectedPtr, scriptObj);
+				self.hideCtrlWindow();
+			}.bind(self));
 		}
 	}
 	
@@ -522,6 +547,9 @@ class CfgEditor {
 				var content = $(scriptEntry).children("._scriptEntry_talkContent").html();
 				var channel = $(scriptEntry).hasClass("otherCh")? "other": "main";
 				return { type, actorId, content, channel };
+			case "sect_title":
+				var text = $(scriptEntry).children().children("span").text();
+				return { type, text };
 			default:
 				return { type };
 		}
@@ -565,6 +593,13 @@ class CfgEditor {
 		//---
 		this.popupCtrlWindow(title, content, applyCallback);
 	}
+	popWindow_editTitle(text, applyCallback){
+		var title = MSG["Title_EditTitle"];
+		var content = builder.ctrlWin_editSectTitle(text);
+		//---
+		$("._ctrlwindow").css("height", "200px");
+		this.popupCtrlWindow(title, content, applyCallback);
+	}
 
 	popupCtrlWindow(title, content, callback){
 		$("._ctrlbar_title").text(title);
@@ -573,6 +608,7 @@ class CfgEditor {
 		$("._ctrlwindow").fadeIn(200);
 	}
 	hideCtrlWindow(){
+		$("._ctrlwindow").css("height", "400px");
 		$("#_btn_ctrlWinApply").off();
 		$("._ctrlwindow").fadeOut(200);
 	}

@@ -64,6 +64,30 @@
 #_msgbox.info { background: #7ced99; }
 #_msgbox.error { background: #ed7f7f; }
 
+/* Center Box */
+#_centerbox {
+	display: none;
+	position: absolute;
+	width: 100%;
+}
+#_centerbox .innerFrame {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#_centerbox.sectTitle { top: calc( 50% - 40px); }
+#_centerbox.sectTitle ._content {
+	background: rgba(0, 0, 0, 0.8);
+	color: #e7a81c;
+	font-weight: bold;
+	font-size: 2.2rem;
+	text-align: center;
+
+	padding: 15px 0;
+	width: 100%;
+}
+
 /* Chat Window */
 #chatWindow {
 	position: absolute;
