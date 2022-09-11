@@ -8,13 +8,11 @@ class TrpgParser{
 			"ddfFotmat": new RegExp(/(^\[(.*?)\])?<font color='#([\w\d]{6})'><b>(.*?)<\/b>：(.*?)<\/font>/, 'smg'),
 
 			"isHZWEB": new RegExp(/<version>hazmole_v(.*?)<\/version>/),
-			"hzweb_actorCss": new RegExp(/\._actor_(\d+) { color: #([\w\d]{6}); }/, 'g'),
+			"hzweb_actorCss": new RegExp(/\._actor_(\d+) ._actorName { color: #([\w\d]{6}); }\n\._actor_\d+ ._actorName::after { content:"(.*?)"; }\n._actor_\d+ ._actorImg { background-image:url\((.*?)\); }/, 'g'),
 			"hzwebFormat": new RegExp(/<div class="_script" data-type="(\w+)">(.*?)<\/div><!--EOS-->/, 'smg'),
 			"hzweb_getTitle": new RegExp(/<title>(.*?)<\/title>/, 's'),
 			"hzweb_getBgImg": new RegExp(/<div class="_hidden">(.*?)<\/div>/, 's'),
-			"hzweb_getActorName": new RegExp(/<div class="_actorName _actor_(\d+)">(.*?)<\/div>/, 'sg'),
-			"hzweb_getActorImg": new RegExp(/<div class="_actorImg.*?" style="background-image:url\((.*?)\)">/, 'sg'),
-			"hzweb_getTalkChannel": new RegExp(/<div class="_talk (.*?)">/, 'sg'),
+			"hzweb_getTalk": new RegExp(/<div class="_talk (.*?) _actor_(\d+)">/, 'sg'),
 			"hzweb_getTalkContent": new RegExp(/<div class="_actorWords">(.*?)<\/div>/, 'smg'),
 		};
 		this.filename = '';
@@ -184,9 +182,11 @@ class TrpgParser{
 			var matchMap = [...data.matchAll(self.regList['hzweb_actorCss'])][0];
 			var id = matchMap[1];
 			var colorCode = matchMap[2];
+			var name = matchMap[3];
+			var imgUrl = matchMap[4]!=null? matchMap[4]: "";
 
 			if(self.userMap[id]!=null) return ;
-			self.userMap[id] = new Actor(id, null, colorCode, "");
+			self.userMap[id] = new Actor(id, name, colorCode, imgUrl);
 		}
 		//=======
 		function parseSection(data){
@@ -213,18 +213,9 @@ class TrpgParser{
 		function parseInfo_talk(data){
 			var matchMap = [];
 
-			matchMap = [...data.matchAll(self.regList['hzweb_getActorName'])][0];
-			var actorId = matchMap[1];
-			var actorName = matchMap[2];
-			matchMap = [...data.matchAll(self.regList['hzweb_getActorImg'])][0];
-			var actorImgUrl = matchMap[1];
-			if(self.userMap[actorId].name === null){
-				self.userMap[actorId].name = actorName;
-				self.userMap[actorId].imgUrl = actorImgUrl;
-			}
-
-			matchMap = [...data.matchAll(self.regList['hzweb_getTalkChannel'])][0];
+			matchMap = [...data.matchAll(self.regList['hzweb_getTalk'])][0];
 			var channel = matchMap[1]=="mainCh"? "main": "other";
+			var actorId = matchMap[2];
 
 			matchMap = [...data.matchAll(self.regList['hzweb_getTalkContent'])][0];
 			var content = matchMap[1];

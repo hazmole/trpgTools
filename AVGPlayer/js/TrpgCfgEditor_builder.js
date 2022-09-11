@@ -20,7 +20,7 @@ builder.pageR_generalCfg = function(generalCfg){
 		<div class="row"><b>${MSG["exportFormat"]}</b>：<select id="_input_exportType">
 				<option value="HZRP"        ${ exportType=="HZRP"? "selected": "" }>${MSG["fileType_HZRP"]}</option>
 				<option value="HTML_SIMPLE" ${ exportType=="HTML_SIMPLE"? "selected": "" }>${MSG["fileType_HTML_simple"]}</option>
-				<option value="HTML_STD"    ${ exportType=="HTML"? "selected": "" }>${MSG["fileType_HTML_standard"]}</option>
+				<option value="HTML_STD"    ${ exportType=="HTML_STD"? "selected": "" }>${MSG["fileType_HTML_standard"]}</option>
 			</select>
 		</div>
 		<div class="row"><b>${MSG["otherOptions"]}：</b></div>

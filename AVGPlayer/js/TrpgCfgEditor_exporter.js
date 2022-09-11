@@ -1,4 +1,4 @@
-var VERSION = "hazmole_v0.9";
+var VERSION = "hazmole_v0.92";
 
 class CfgExporter {
 	constructor(){}
@@ -55,7 +55,9 @@ class CfgExporter {
 	//===================
 
 	getActorStyle(actorObj){
-		return `._actor_${actorObj.id} { color: #${actorObj.color}; }`;
+		return `._actor_${actorObj.id} ._actorName { color: #${actorObj.color}; }
+				._actor_${actorObj.id} ._actorName::after { content:"${actorObj.name}"; }
+				._actor_${actorObj.id} ._actorImg { background-image:url(${actorObj.imgUrl}); } `.fmt();
 	}
 	getScriptEntry(actorMap, scriptObj){
 		var type = scriptObj.type;
@@ -80,12 +82,12 @@ class CfgExporter {
 			var imgUrl = actorObj.imgUrl;
 			var chClass = scriptObj.channel=="main"? "mainCh": "otherCh";
 			return `
-			<div class="_talk ${chClass}">
+			<div class="_talk ${chClass} _actor_${id}">
 				<div class="_leftCol">
-					<div class="_actorImg ${imgUrl==""? "_hidden": ""}" style="background-image:url(${imgUrl})"></div>
+					<div class="_actorImg ${imgUrl==""? "_hidden": ""}"></div>
 				</div>
 				<div class="_rightCol">
-					<div class="_actorName _actor_${id}">${actorObj.name}</div>
+					<div class="_actorName"></div>
 					<div class="_actorWords">${scriptObj.content}</div>
 				</div>
 			</div>`
