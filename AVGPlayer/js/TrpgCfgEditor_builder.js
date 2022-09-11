@@ -37,7 +37,7 @@ builder.pageR_generalCfg = function(generalCfg){
 builder.pageL_actorEntryList = function(actorList){
 	var entryList = actorList.map( actor => builder.actorEntry(actor) )
 	return `<div class="title">${MSG["Title_ActorList"]}</div>
-					${entryList.join('')}`.fmt();
+					<div class="entryList">${entryList.join('')}</div>`.fmt();
 }
 builder.pageR_actorCfg_Workspace = function(title){
 	return `
@@ -200,8 +200,21 @@ builder.controlWindow = function(){
 			</div>
 		</div>`;
 }
+builder.confirmWindow = function(){
+	return `
+		<div id="_cnfmwindow">
+			<div class="message"></div>
+			<div class="row">
+				<button id="_btn_cnfm_yes" class="_btn_confrim">${MSG["Yes"]}</button>
+				<button id="_btn_cnfm_no"  class="_btn_confrim">${MSG["No"]}</button>
+			</div>
+		</div>`.fmt();
+}
 builder.messageBox = function(){
 	return `<div id="_msgbox"></div>`;
+}
+builder.blockScreen = function(){
+	return `<div id="_blockScreen"></div>`
 }
 builder.mainFrame = function(){
 	return `

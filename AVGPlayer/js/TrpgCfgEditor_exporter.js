@@ -24,7 +24,7 @@ class CfgExporter {
 			};
 		return {
 			fileName: filename,
-			fileData: JSON.stringify(filedata)
+			fileData: JSON.stringify(filedata, null, 2)
 		};
 	}
 

@@ -68,7 +68,7 @@
 	background-repeat: no-repeat;
 }
 
-/* Message Bar */
+/* Message Box */
 #_msgbox {
 	display: none;
 	position: absolute;
@@ -88,6 +88,37 @@
 #_msgbox.success { background: #7ced99; }
 #_msgbox.warn { background: #ffbe46; }
 #_msgbox.error { background: #ed7f7f; }
+
+/* Confirm Window */
+#_cnfmwindow {
+	display: none;
+	position: absolute;
+	top: 200px;
+	left: calc(50%);
+	margin-left: calc(-400px/2);
+
+	z-index: 50;
+	width: 400px;
+	border: 2px solid #29292a;
+	border-top: 32px solid #29292a;
+	
+	background: #454752;
+	color: white;
+	text-align: center;
+}
+#_cnfmwindow .message {
+	padding: 10px 0;
+}
+#_blockScreen {
+	display: none;
+	position: absolute;
+	top: 0; left: 0;
+	width: calc(100vw);
+	height: calc(100vh);
+	z-index: 20;
+
+	background: rgba(0,0,0,0.5);
+}
 
 /* Control Window */
 ._ctrlwindow {
@@ -169,6 +200,11 @@
 	font-size: 1.2rem;
 	font-weight: bold;
 	color: white;
+}
+#_leftCol .entryList {
+	width: 100%;
+	height: calc(100% - 55px);
+	overflow-y: auto;
 }
 #_leftCol .Entry {
 	background: #f0f4ff;
@@ -296,6 +332,18 @@
 ._btn_delete { background: #b12828; }
 ._btn_delete:hover { background: #eb6b6b; }
 ._btn_delete:active { background: #870d0d; }
+
+._btn_confrim {
+	width: 80px;
+	margin: 0 10px;
+	padding: 15px;
+	font-size: 1.2rem;
+	cursor: pointer;
+	background: #c1c1c1;
+	color: black;
+}
+._btn_confrim:hover { background: #e3e3e3; }
+._btn_confrim:active { background: #5c5c5c; }
 
 /* Others */
 .infoBlock {

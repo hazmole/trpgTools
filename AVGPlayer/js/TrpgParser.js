@@ -72,10 +72,16 @@ class TrpgParser{
 	GetScript(){
 		return this.script;
 	}
-	SetActorMap(actorMap){
-		this.userMap = {};
-		for(var actor of actorMap){
-			this.userMap[actor.id] = new Actor(actor.id, actor.name, actor.color, actor.imgUrl);
+	InheritActorCfg(actorMap){
+		var inheritedCfg = Object.values(actorMap);
+		for(var actorObj of inheritedCfg){
+			var match = Object.values(this.userMap).find( actor => actor.name == actorObj.name );
+			if(match){
+				this.userMap[match.id].color = actorObj.color;
+				this.userMap[match.id].imgUrl = actorObj.imgUrl;
+			} else {
+				this.registerUser(actorObj.name, actorObj.color, actorObj.imgUrl);
+			}
 		}
 	}
 
@@ -121,9 +127,10 @@ class TrpgParser{
 	}
 
 	//==================
-	registerUser(userName, color){
-		var actorArr = Object.values(this.userMap);
+	registerUser(userName, color, imgUrl){
+		if(!imgUrl) imgUrl = "";
 
+		var actorArr = Object.values(this.userMap);
 		var matchActorObj = null;
 		var maxId = -1;
 		for(var actor of actorArr){
@@ -134,7 +141,7 @@ class TrpgParser{
 
 		if(matchActorObj == null){
 			var id = (maxId+1);
-			this.userMap[id] = new Actor(id, userName, color, "");
+			this.userMap[id] = new Actor(id, userName, color, imgUrl);
 			return id;
 		}
 		return matchActorObj.id;
@@ -157,22 +164,21 @@ class TrpgParser{
 
 	parseFormat_HZWEB(){
 		var self = this;
+		var style = this.rawData.match(this.regList["htmlStyle"])[1];
+		var body = this.rawData.match(this.regList["htmlBody"])[1];
 
 		var title = this.rawData.match(this.regList["hzweb_getTitle"])[1];
+		var isOtherChHidden = style.match(/\.otherCh{ display:none; }/)!=null;
+		this.generalCfg.title = title;
+		this.generalCfg.isOnlyMainCh = isOtherChHidden;
 
-		var style = this.rawData.match(this.regList["htmlStyle"])[1];
 		var actorArr = style.match(this.regList["hzweb_actorCss"])
 			.map( actor => parseActorStyle(actor) );
-		var isOtherChHidden = style.match(/\.otherCh{ display:none; }/)!=null;
 
-		var body = this.rawData.match(this.regList["htmlBody"])[1];
 		var sectionphArr = body.match(this.regList["hzwebFormat"])
 			.map( sect => sect.trim() )
 			.map( sect => parseSection(sect) )
 			.filter( sect => sect!=null );
-
-		this.generalCfg.title = title;
-		this.generalCfg.isOnlyMainCh = isOtherChHidden;
 		this.script = sectionphArr;
 
 		//==============

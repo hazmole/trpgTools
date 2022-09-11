@@ -60,11 +60,14 @@ var MSG = {
 	"Success_ParseComplete": "讀取成功！",
 	"Success_AutoLoaded": "自動讀取成功！",
 	"Success_SaveCfg": "設定已儲存！",
+	"Confrim_inheritCurrentActorCfg": "是否要沿用目前的角色設定？",
 	"Tip_selectActor": "請點選左側的登場角色進行個別設定。",
 	"Tip_editScript": "請使用左側功能編輯你的團錄。",
 	"fileType_HZRP": ".hzrp (團錄播放器專用格式)",
 	"fileType_HTML_simple": ".html (網頁格式, 簡易版)",
 	"fileType_HTML_standard": ".html (網頁格式, 標準版)",
+	"Yes": "是",
+	"No": "否",
 };
 
 class CfgEditor {
@@ -85,6 +88,7 @@ class CfgEditor {
 		this.createUploadElem();
 		this.createMsgBox();
 		this.createCtrlWindow();
+		this.createConfirmWindow();
 
 		this.loadFromWebStorage();
 		
@@ -103,9 +107,12 @@ class CfgEditor {
 
 	//================
 	// Parser Ref
-	Parse(filename, data){
+	Parse(filename, data, isInheritActor){
 		try{
 			this.parser.ParseData(filename, data);
+			if(isInheritActor){
+				this.parser.InheritActorCfg(this.actorCfg);
+			}
 			this.initConfig();
 	 	} catch(e){
 			this.popupMsgBox("error", MSG["Error_WrongFileFormat"]);
@@ -510,6 +517,23 @@ class CfgEditor {
 	}
 
 	//=================
+	// Confirm Window
+	popConfirm(text, callback){
+		var self = this;
+		$("#_cnfmwindow .message").text(text);
+		$("#_cnfmwindow #_btn_cnfm_yes").on('click', function(){ callback(true); self.hideConfirm(); });
+		$("#_cnfmwindow #_btn_cnfm_no").on('click', function(){ callback(false); self.hideConfirm(); });
+		$("#_cnfmwindow").fadeIn(200);
+		$("#_blockScreen").fadeIn(200);
+	}
+	hideConfirm(){
+		$("#_cnfmwindow #_btn_cnfm_yes").off();
+		$("#_cnfmwindow #_btn_cnfm_no").off();
+		$("#_cnfmwindow").fadeOut(200);
+		$("#_blockScreen").fadeOut(200);
+	}
+
+	//=================
 	// Control Window
 	popWindow_editBackground(imgUrl, applyCallback){
 		var title = MSG["Title_EditBgImg"];
@@ -548,7 +572,11 @@ class CfgEditor {
 	}
 	createCtrlWindow(){
 		$(this.viewPort).append(builder.controlWindow());
-		$(".cross-stand-alone").on('click', this.onClick_hideCtrlWindow.bind(this));
+		$("._ctrlwindow .cross-stand-alone").on('click', this.onClick_hideCtrlWindow.bind(this));
+	}
+	createConfirmWindow(){
+		$(this.viewPort).append(builder.blockScreen());
+		$(this.viewPort).append(builder.confirmWindow());
 	}
 	createFrame(){
 		$(this.viewPort).append(builder.mainFrame());
@@ -640,7 +668,9 @@ class CfgEditor {
 
 			var fr = new FileReader();
 			fr.onload = function(){
-				self.Parse(filename, fr.result);
+				self.popConfirm(MSG["Confrim_inheritCurrentActorCfg"], function(retVal){
+					self.Parse(filename, fr.result, retVal);
+				});
 			}
 			fr.readAsText(file);
 		});
