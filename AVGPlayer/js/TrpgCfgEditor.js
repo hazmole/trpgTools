@@ -8,6 +8,7 @@ var MSG = {
 	"btn_save": "儲存",
 	"btn_apply": "確定",
 	"btn_preview": "預覽",
+	"btn_delete": "刪除",
 	"btn_methodMoveUp": "上移",
 	"btn_methodMoveDown": "下移",
 	"btn_methodEdit": "編輯段落",
@@ -35,9 +36,10 @@ var MSG = {
 	"replatTitle": "團錄標題",
 	"exportFormat": "輸出格式",
 	"otherOptions": "其他選項",
-	"isOnlyShowMainCh": "只顯示主要頻道？",
+	"isOnlyShowMainCh": "只顯示主要頻道？<br>(這個選項不會刪除場外資訊，只是將其隱藏起來)",
 	"talk_actor": "發話角色",
 	"talk_channel": "頻道",
+	"talkTimes": "發話次數",
 	"ch_main": "主要",
 	"ch_other": "場外",
 	"actor_id": "ID",
@@ -209,8 +211,10 @@ class CfgEditor {
 		//---
 		$("#_actor_workspace").html(builder.subpage_actorEditPage(actorObj));
 		this.render_actorHeadImg();
+		this.render_actorTalkTimes(actorObj);
 		//---
 		$("#_btn_saveActorCfg").on('click', this.onClick_SaveActorCfg.bind(this, actorObj.id));
+		$("#_btn_deleteActorCfg").on('click', this.onClick_DelActorCfg.bind(this, actorObj.id));
 		$("#_input_actorHeadImgUrl").on('change', this.onChange_setActorHeadImg.bind(this));
 		$("#_input_actorColor_text").on('change', this.onChange_setActorColor.bind(this, "text"));
 		$("#_input_actorColor").on('change', this.onChange_setActorColor.bind(this, "picker"));
@@ -224,6 +228,14 @@ class CfgEditor {
 			$("._actor_headImg").html(builder.actorUndefinedImg());
 			$("._actor_headImg").css("background-image", '');
 		}
+	}
+	render_actorTalkTimes(actorObj){
+		var actorTalkArr = Object.values(this.scriptCfg)
+			.filter(script => script.type == "talk" && script.actorId == actorObj.id);
+		var actorTalkTimes = actorTalkArr.length;
+
+		$("#_output_talkTimes").text(actorTalkTimes);
+		if(actorTalkTimes == 0) $("#_btn_deleteActorCfg").removeClass("hidden");
 	}
 	render_scriptList(){
 		var isOnlyShowMainCh = this.generalCfg.isOnlyMainCh;
@@ -278,6 +290,14 @@ class CfgEditor {
 		this.scriptCfg = scriptArr;
 		this.saveToWebStorage();
 		//---
+		this.popupMsgBox("success", MSG["Success_SaveCfg"]);
+	}
+
+	onClick_DelActorCfg(id){
+		delete this.actorCfg[id];
+		this.goToPage("actor");
+		//---
+		this.saveToWebStorage();
 		this.popupMsgBox("success", MSG["Success_SaveCfg"]);
 	}
 

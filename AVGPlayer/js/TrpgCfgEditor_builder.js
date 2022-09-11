@@ -24,7 +24,7 @@ builder.pageR_generalCfg = function(generalCfg){
 			</select>
 		</div>
 		<div class="row"><b>${MSG["otherOptions"]}：</b></div>
-		<div class="row vcneter">
+		<div class="row flexST">
 			<input type="checkbox" id="_input_isOnlyMainCh" ${isOnlyMainCh? "checked='checked'":""}>
 			<label for="_input_isOnlyMainCh"> ${MSG["isOnlyShowMainCh"]}</label>
 		</div>
@@ -63,7 +63,7 @@ builder.subpage_actorEditPage = function(actorObj){
 				<div class="row flex"><div class="_entry_title">${MSG["actor_id"]}：</div><div>${actorObj.id}</div></div>
 				<div class="row flex"><div class="_entry_title">${MSG["actor_name"]}：</div><div><input type="text" id="_input_actorName" value="${actorObj.name}"></div></div>
 				<div class="row flex"><div class="_entry_title">${MSG["actor_color"]}：</div>
-					<div style="display:flex; align-items:center ;">
+					<div class="flex">
 						<div style="margin-right:5px;">#<input type="text" id="_input_actorColor_text" value="${actorObj.color.toUpperCase()}" style="width:60px;"></div>
 						<div><input type="color" id="_input_actorColor" value="#${actorObj.color}"></div>
 					</div>
@@ -74,7 +74,11 @@ builder.subpage_actorEditPage = function(actorObj){
 				</div>
 			</div>
 		</div>
-		<div class="row right"><button id="_btn_saveActorCfg" class="_btn_save">${MSG["btn_save"]}</button></div>`.fmt();
+		<div class="row">${MSG["talkTimes"]}：<span id="_output_talkTimes"></span></div>
+		<div class="row right">
+			<button id="_btn_saveActorCfg" class="_btn_save">${MSG["btn_save"]}</button>
+			<button id="_btn_deleteActorCfg" class="hidden _btn_delete">${MSG["btn_delete"]}</button>
+		</div>`.fmt();
 }
 
 /*----------------

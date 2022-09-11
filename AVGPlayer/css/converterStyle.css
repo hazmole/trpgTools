@@ -279,7 +279,7 @@
 #_uploadFile { display: none; }
 
 /* Save Button */
-._btn_save, ._btn_preview {
+._btn_save, ._btn_preview, ._btn_delete {
 	width: 100px;
 	padding: 15px;
 	background: #34446e;
@@ -292,6 +292,10 @@
 ._btn_preview { background: #646778; }
 ._btn_preview:hover { background: #818499; }
 ._btn_preview:active { background: #353e68; }
+
+._btn_delete { background: #b12828; }
+._btn_delete:hover { background: #eb6b6b; }
+._btn_delete:active { background: #870d0d; }
 
 /* Others */
 .infoBlock {
@@ -309,11 +313,12 @@
 .hidden { display: none; }
 .row { margin: 10px; }
 .flex { display: flex; align-items: center; }
+.flexST { display: flex; align-items: start; }
 .clickable { cursor: pointer; }
 .right { text-align: right; }
 .vcneter { display: flex; align-items: center; }
 .fullWidth { width: 100%; }
 input[type=text] { height: 25px; }
 input[type=text].long { width: 100%; }
-input[type=checkbox] { height: 18px; width: 18px; margin: 0 8px; }
+input[type=checkbox] { height: 18px; width: 18px; margin: 2px 8px; }
 select { height: 25px; }

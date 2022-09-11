@@ -74,6 +74,12 @@ class TrpgParser{
 	GetScript(){
 		return this.script;
 	}
+	SetActorMap(actorMap){
+		this.userMap = {};
+		for(var actor of actorMap){
+			this.userMap[actor.id] = new Actor(actor.id, actor.name, actor.color, actor.imgUrl);
+		}
+	}
 
 	//=================
 	checkMode(data){
@@ -118,12 +124,22 @@ class TrpgParser{
 
 	//==================
 	registerUser(userName, color){
-		var userMapCount = Object.keys(this.userMap).length;
-		if(!this.userMap[userName]){
-			this.userMap[userName] = new Actor(userMapCount, userName, color, "");
-			return userMapCount;
+		var actorArr = Object.values(this.userMap);
+
+		var matchActorObj = null;
+		var maxId = -1;
+		for(var actor of actorArr){
+			var id = parseInt(actor.id)
+			if(id > maxId) maxId = id;
+			if(actor.name == userName) matchActorObj = actor;
 		}
-		return this.userMap[userName].id;
+
+		if(matchActorObj == null){
+			var id = (maxId+1);
+			this.userMap[id] = new Actor(id, userName, color, "");
+			return id;
+		}
+		return matchActorObj.id;
 	}
 	//==================
 	parseFormat_ARP(){
