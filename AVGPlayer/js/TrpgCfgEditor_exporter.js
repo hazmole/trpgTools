@@ -24,7 +24,7 @@ class CfgExporter {
 			};
 		return {
 			fileName: filename,
-			fileData: JSON.stringify(filedata, null, 2)
+			fileData: JSON.stringify(filedata, null, "\t")
 		};
 	}
 
@@ -103,7 +103,7 @@ class CfgExporter {
 		//=======
 		function standardWebStyle(){
 			return `
-	._halt { margin:20px 0; }
+	._halt { padding:30px 0; }
 	._talk { margin:5px 0; display:flex; border:1px solid black; background:#1e1e1e; width:100%; max-width:1080px; border-radius:5px; }
 	._leftCol { width:122px; }
 	._rightCol { width:calc(100% - 126px); }
@@ -111,7 +111,7 @@ class CfgExporter {
 	._actorImg { margin:6px; width:110px; height:110px; background-repeat:no-repeat; background-size:cover; background-color:#2a2a2a; }
 	._actorWords { margin:5px; background:#e3e3e3; font-size:1.1rem; padding:10px; height:calc(100% - 57px); border-radius:5px; }
 
-	._talk.otherCh { width:calc(50%); text-align:right; }
+	._talk.otherCh { width:calc(50%); text-align:right; margin-left:auto; }
 	._talk.otherCh ._leftCol { display:none; }
 	._talk.otherCh ._rightCol { width:100%; }
 	._talk.otherCh ._actorWords { background:black;color:white; }
@@ -119,7 +119,7 @@ class CfgExporter {
 		}
 		function simpleWebStyle(){
 			return `
-	._halt { margin:40px 0; }
+	._halt { padding:40px 0; }
 	._talk { margin:0; display:flex; border-bottom:1px solid #3a3a3a; background:#1e1e1e; color:#eee; width:100%; max-width:1080px; }
 	._leftCol { width: 20px; }
 	._rightCol { width:100%; }

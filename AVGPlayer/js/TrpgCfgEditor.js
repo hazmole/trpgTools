@@ -101,7 +101,7 @@ class CfgEditor {
 		this.generalCfg = {
 			title: this.parser.GetTitle(),
 			isOnlyMainCh: this.parser.GetGeneralCfg().isOnlyMainCh,
-			exportType: "HZRP",
+			exportType: "HTML_SIMPLE",
 		};
 		this.actorCfg = this.parser.GetActorList();
 		this.scriptCfg = this.parser.GetScript();
