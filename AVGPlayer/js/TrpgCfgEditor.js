@@ -13,6 +13,7 @@ var MSG = {
 	"btn_methodMoveDown": "下移",
 	"btn_methodEdit": "編輯段落",
 	"btn_methodDel": "刪除段落",
+	"btn_methodDelAllOtherCh": "刪除所有場外",
 	"btn_methodAddTalk": "插入：對話",
 	"btn_methodAddChangeBg": "插入：更改背景",
 	"btn_methodAddHalt": "插入：停頓",
@@ -61,6 +62,7 @@ var MSG = {
 	"Success_AutoLoaded": "自動讀取成功！",
 	"Success_SaveCfg": "設定已儲存！",
 	"Confrim_inheritCurrentActorCfg": "是否要沿用目前的角色設定？",
+	"Confrim_makeSureAction": "你確定要進行此操作嗎？",
 	"Tip_selectActor": "請點選左側的登場角色進行個別設定。",
 	"Tip_editScript": "請使用左側功能編輯你的團錄。",
 	"fileType_HZRP": ".hzrp (團錄播放器專用格式)",
@@ -200,6 +202,7 @@ class CfgEditor {
 		$("#_btn_moveDownCmd").on('click', this.onClick_moveDownCmd.bind(this));
 		$("#_btn_editCmd").on('click', this.onClick_editCmd.bind(this));
 		$("#_btn_delCmd").on('click', this.onClick_delScriptCmd.bind(this));
+		$("#_btn_delOtherChCmd").on('click', this.onClick_delAllOtherTalkCmd.bind(this));
 		$("#_btn_addTalkCmd").on('click', this.onClick_addScriptCmd.bind(this, "talk"));
 		$("#_btn_addChBgCmd").on('click', this.onClick_addScriptCmd.bind(this, "changeBg"));
 		$("#_btn_addHaltCmd").on('click', this.onClick_addScriptCmd.bind(this, "halt"));
@@ -464,6 +467,14 @@ class CfgEditor {
 		$(this.selectedPtr).remove();
 		this.selectedPtr = null;
 	}
+	onClick_delAllOtherTalkCmd(){
+		var self = this;
+		this.popConfirm(MSG["Confrim_makeSureAction"], function(ret){
+			if(ret==false) return ;
+			$("._scriptEntry.otherCh").remove();
+			self.selectedPtr = null;
+		});
+	}
 
 	onChange_setActorHeadImg(){
 		this.render_actorHeadImg();
@@ -521,8 +532,8 @@ class CfgEditor {
 	popConfirm(text, callback){
 		var self = this;
 		$("#_cnfmwindow .message").text(text);
-		$("#_cnfmwindow #_btn_cnfm_yes").on('click', function(){ callback(true); self.hideConfirm(); });
-		$("#_cnfmwindow #_btn_cnfm_no").on('click', function(){ callback(false); self.hideConfirm(); });
+		$("#_cnfmwindow #_btn_cnfm_yes").on('click', function(){ self.hideConfirm(); callback(true); });
+		$("#_cnfmwindow #_btn_cnfm_no").on('click', function(){ self.hideConfirm(); callback(false); });
 		$("#_cnfmwindow").fadeIn(200);
 		$("#_blockScreen").fadeIn(200);
 	}
@@ -668,9 +679,14 @@ class CfgEditor {
 
 			var fr = new FileReader();
 			fr.onload = function(){
-				self.popConfirm(MSG["Confrim_inheritCurrentActorCfg"], function(retVal){
-					self.Parse(filename, fr.result, retVal);
-				});
+				if(Object.keys(self.actorCfg).length>0){
+					self.popConfirm(MSG["Confrim_inheritCurrentActorCfg"], function(retVal){
+						self.Parse(filename, fr.result, retVal);
+					});
+				} else {
+					self.Parse(filename, fr.result, false);
+				}
+				
 			}
 			fr.readAsText(file);
 		});

@@ -91,6 +91,7 @@ builder.pageL_scriptMethodList = function(){
 		<div id="_btn_moveDownCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodMoveDown"]}</div>
 		<div id="_btn_editCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodEdit"]}</div>
 		<div id="_btn_delCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodDel"]}</div>
+		<div id="_btn_delOtherChCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodDelAllOtherCh"]}</div>
 		<div id="_btn_addTalkCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodAddTalk"]}</div>
 		<div id="_btn_addChBgCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodAddChangeBg"]}</div>
 		<div id="_btn_addHaltCmd" class="_scriptMethodEntry Entry clickable">${MSG["btn_methodAddHalt"]}</div>`.fmt();
