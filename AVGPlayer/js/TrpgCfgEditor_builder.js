@@ -3,8 +3,19 @@ function builder(){}
 /*----------------
   Page: Introduction
  ----------------*/
-builder.pageR_intro = function(){
+builder.pageL_introDocList = function(){
+	return `
+		<div class="title">${MSG["Title_IntroDocList"]}</div>
+		<div class="entryList">
+			<div id="_doc_intro" class="_introDocEntry Entry clickable">${MSG["doc_introduction"]}</div>
+			<div id="_doc_publish" class="_introDocEntry Entry clickable">${MSG["doc_howToPublish"]}</div>
+		</div>`.fmt();
+}
+builder.pageR_introduction = function(){
 	return `<div class="infoBlock">${MSG["introDoc"]}</div>`;
+}
+builder.pageR_howToPublish = function(){
+	return `<h2>${MSG["doc_howToPublish"]}</h2><div class="infoBlock">${MSG["howToPublishDoc1"]}</div>`;
 }
 
 /*----------------

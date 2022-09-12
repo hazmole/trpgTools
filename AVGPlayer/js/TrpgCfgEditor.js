@@ -18,6 +18,7 @@ var MSG = {
 	"btn_methodAddChangeBg": "插入：設定背景",
 	"btn_methodAddHalt": "插入：停頓",
 	"btn_methodAddTitle": "插入：段落標題",
+	"Title_IntroDocList": "說明文件",
 	"Title_ActorList": "登場角色列表",
 	"Title_ScriptMethodList": "編輯腳本功能",
 	"Title_EditBgImg": "設定背景圖片",
@@ -36,6 +37,21 @@ var MSG = {
 		<li>利用「腳本設定」可以編輯團錄內容並加入播放特效。</li>
 		<li>在設定完成後，點擊「輸出」來將團錄輸出成播放器可用的格式。</li></ul>
 		若有其他使用上的疑問或建議，請不吝在Discord上聯絡 <b>hazmole#6672</b>。`,
+	"howToPublishDoc1": `花了大把時間，你編輯好了你的團錄，重新輸出成了美美的新格式，接下來呢？<br>
+		在這篇文章，我們將說明該如何把這個工具輸出的網頁檔發布到網路上，讓所有人都能看到你辛苦的成果。
+		<h4>Google雲端硬碟</h4><p>我們建議的其中一個作法，是透過<a href="https://www.google.com.tw/intl/zh-TW/drive">Google Drive雲端硬碟</a>的服務來儲存管理你的團錄。<br>
+		你可能會想問：「不對啊？我試過把網頁檔丟到雲端硬碟，但其他人連過去只能看到一堆醜醜的原始檔文字啊？」你是對的，所以我們需要在這裡做一點手腳。</p>
+		<p>首先，我們需要在雲端硬碟中建立一個<b>公開資料夾</b>，我們將把所有的團錄文件都放在這裡面。
+		建立公開資料夾的方式很簡單：你正常建立一個資料夾，然後對它<b>按右鍵，選擇「共用」</b>，把存取權設定成「<b>知道連結的任何人</b>」。</p>
+			<img src="image/docs/001.jpg">
+		<p>進到資料夾，你會看到你的目錄右邊多了一個代表公開的符號。<br>把你的團錄檔案放進去之後，就可以繼續下一步。</p>
+			<img src="image/docs/002.jpg">
+		<h4>DriveToWeb</h4><p>接下來，我們進到這個第三方網站「<a href="https://www.drv.tw/">DriveToWeb</a>」。<br>這個網站可以幫助我們把雲端硬碟中公開資料夾裡的網頁檔發布出去。</p>
+			<img src="image/docs/003.jpg">
+		<p>選擇上方的「<b>Host on Google Drive</b>」，登入帳號並授權。<br>然後，噹噹，你就得到每個團錄的超連結了！<br>你還可以在下面設定這些超連結的網域名稱！</p>
+			<img src="image/docs/004.jpg">
+		<p>最後，把超連結整理到你喜歡的平台上，就大功告成了！<br>如果你想要讓更多人看到你的團錄，也可以把他們分享到<a href="https://sites.google.com/view/cosmosbravesbar">TRPG Brave's Bar</a>上喔！</p>
+			<img src="image/docs/005.jpg">`,
 	"replatTitle": "團錄標題",
 	"exportFormat": "輸出格式",
 	"otherOptions": "其他選項",
@@ -71,6 +87,8 @@ var MSG = {
 	"fileType_HZRP": ".hzrp (團錄播放器專用格式)",
 	"fileType_HTML_simple": ".html (網頁格式, 簡易版)",
 	"fileType_HTML_standard": ".html (網頁格式, 標準版)",
+	"doc_introduction": "介紹",
+	"doc_howToPublish": "我要如何發布團錄？",
 	"Yes": "是",
 	"No": "否",
 };
@@ -178,7 +196,12 @@ class CfgEditor {
 	}
 	goToPage_info(){
 		$("#btn_to_info").addClass("active");
-		$("#_rightCol").append(builder.pageR_intro());
+		$("#_leftCol").append(builder.pageL_introDocList());
+		//---
+		this.render_docIntro();
+		//---
+		$("#_doc_intro").on('click', this.render_docIntro.bind(this));
+		$("#_doc_publish").on('click', this.render_docHowToPublish.bind(this));
 	}
 	goToPage_general(){
 		$("#btn_to_general").addClass("active");
@@ -258,7 +281,18 @@ class CfgEditor {
 		$("._scriptEntry").on('click', this.onClick_selectScriptEntry.bind(this));
 	}
 
-	
+	render_docIntro(){
+		$("#_rightCol").html(builder.pageR_introduction());
+		//---
+		$("._introDocEntry").removeClass("active");
+		$("#_doc_intro").addClass("active");
+	}
+	render_docHowToPublish(){
+		$("#_rightCol").html(builder.pageR_howToPublish());
+		//---
+		$("._introDocEntry").removeClass("active");
+		$("#_doc_publish").addClass("active");
+	}
 
 
 
