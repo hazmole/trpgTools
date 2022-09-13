@@ -1,0 +1,21 @@
+<script src="./js/jquery-3.6.0.min.js"></script>
+<script>
+	function test(){
+		var url = "https://test.trpgline.com/api/channels";
+		var token = "d80ecb0f0e3bfb267bb9c3c748db0c79";
+
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: 'json',
+			headers: {
+				"Authorization": `Bearer ${token}`
+			},
+			success: function (result){
+				console.log(result)
+			}
+		});
+
+	}
+</script>
+<button onclick="test()">Test</button>
