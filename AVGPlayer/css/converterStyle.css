@@ -107,7 +107,7 @@
 	text-align: center;
 }
 #_cnfmwindow .message {
-	padding: 10px 0;
+	overflow-wrap: anywhere;
 }
 #_blockScreen {
 	display: none;
@@ -124,25 +124,24 @@
 ._ctrlwindow {
 	display: none;
 	position: absolute;
-	top: 150px;
+	top: 180px;
 	left: calc(50%);
 	z-index: 50;
 	width: 600px;
-	height: 400px;
 	margin-left: calc(-600px/2);
 	border: 2px solid #29292a;
 	
 	background: #cdd2db;
 	color: black;
 }
-._ctrlwindow ._ctrlbar {
+._ctrlwindow ._ctrlheader {
 	height: 30px;
 	background: #29292a;
 	color: white;
 	display: flex;
   justify-content: space-between;
 }
-._ctrlbar div {
+._ctrlheader div {
 	padding: 5px;
 }
 ._ctrlwindow ._ctrlwindow_cancel {
@@ -155,6 +154,7 @@
 ._ctrlwindow ._ctrlfooter{
 	height: 50px;
 	bottom: 0;
+	margin: 10px 0;
 }
 ._ctrlwindow #_output_imgPreview {
 	background-color: #9aa0ab;
@@ -165,7 +165,7 @@
 }
 ._ctrlwindow #_input_content {
 	width: 100%;
-	height: calc(100% - 85px);
+	height: 120px;
 	font-size: 1rem;
 	resize: none;
 }

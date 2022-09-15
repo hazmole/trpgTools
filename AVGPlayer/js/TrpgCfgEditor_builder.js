@@ -213,28 +213,32 @@ builder._ctrlWin_actorEntry = function(actorObj, isSelected){
 builder.controlWindow = function(){
 	return `
 		<div class="_ctrlwindow">
-			<div class="_ctrlbar">
-				<div class="_ctrlbar_title"></div>
+			<div class="_ctrlheader">
+				<div class="_ctrlwindow_title"></div>
 				<div>
 					<span class="cross-stand-alone">&nbsp;</span>
 				</div>
 			</div>
 			<div class="_ctrlbody"></div>
 			<div class="_ctrlfooter">
-				<div class="row right"><button id="_btn_ctrlWinApply" class="_btn_save">${MSG["btn_apply"]}</button></div>
+				<div class="row right">
+					<button class="_btn_save _btn_ctrlWinApply">${MSG["btn_apply"]}</button>
+					<button class="_btn_save _btn_ctrlWinCancel">${MSG["btn_cancel"]}</button>
+				</div>
 			</div>
 		</div>`;
 }
 builder.confirmWindow = function(){
 	return `
 		<div id="_cnfmwindow">
-			<div class="message"></div>
+			<div id="_cnfm_content" class="row"></div>
 			<div class="row">
 				<button id="_btn_cnfm_yes" class="_btn_confrim">${MSG["Yes"]}</button>
 				<button id="_btn_cnfm_no"  class="_btn_confrim">${MSG["No"]}</button>
 			</div>
 		</div>`.fmt();
 }
+
 builder.messageBox = function(){
 	return `<div id="_msgbox"></div>`;
 }

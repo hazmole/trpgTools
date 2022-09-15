@@ -7,6 +7,7 @@ var MSG = {
 	"btn_information": "說明",
 	"btn_save": "儲存",
 	"btn_apply": "確定",
+	"btn_cancel": "取消",
 	"btn_preview": "預覽",
 	"btn_delete": "刪除",
 	"btn_methodMoveUp": "上移",
@@ -96,6 +97,7 @@ var MSG = {
 class CfgEditor {
 	constructor(id){
 		this.viewPort = document.getElementById(id);
+		this.importAPI = new ImportAPI();
 		this.parser = new TrpgParser();
 		this.exporter = new CfgExporter();
 
@@ -111,7 +113,6 @@ class CfgEditor {
 		this.createUploadElem();
 		this.createMsgBox();
 		this.createCtrlWindow();
-		this.createConfirmWindow();
 
 		this.loadFromWebStorage();
 		
@@ -157,7 +158,7 @@ class CfgEditor {
 	//============
 	// Main Button Event
 	clickImport(){
-		$('#_uploadFile').trigger('click'); 
+		$('#_uploadFile').trigger('click');
 	}
 	clickExport(){
 		if(!this.doLoadedCheck()) return ;
@@ -427,7 +428,6 @@ class CfgEditor {
 
 				var newContent = $("#_input_content").val().replace(/\n/g, '<br>');
 				contentElem.html(newContent);
-				self.hideCtrlWindow();
 			}.bind(self));
 		}
 		function editChangeBgCmd(){
@@ -437,7 +437,6 @@ class CfgEditor {
 				var newUrl = $("#_input_imgUrl").val();
 				imgElem.attr("data-url", newUrl);
 				imgElem.css("background-image", `url(${newUrl})`);
-				self.hideCtrlWindow();
 			}.bind(self));
 		}
 		function editSectTitleCmd(){
@@ -446,7 +445,6 @@ class CfgEditor {
 			self.popWindow_editTitle(text, function(){
 				var newTxt = $("#_input_section_title").val();
 				textElem.text(newTxt);
-				self.hideCtrlWindow();
 			}.bind(self));
 		}
 	}
@@ -483,7 +481,6 @@ class CfgEditor {
 					channel: $("input[name=channel]:checked").val(),
 				};
 				self.insertScriptEntry(self.selectedPtr, scriptObj);
-				self.hideCtrlWindow();
 			}.bind(self));
 		}
 		function addChBgCmd(){
@@ -493,7 +490,6 @@ class CfgEditor {
 					bgUrl: $("#_input_imgUrl").val(),
 				};
 				self.insertScriptEntry(self.selectedPtr, scriptObj);
-				self.hideCtrlWindow();
 			}.bind(self));
 		}
 		function addHaltCmd(){
@@ -509,7 +505,6 @@ class CfgEditor {
 					text: $("#_input_section_title").val(),
 				};
 				self.insertScriptEntry(self.selectedPtr, scriptObj);
-				self.hideCtrlWindow();
 			}.bind(self));
 		}
 	}
@@ -549,12 +544,6 @@ class CfgEditor {
 		}
 	}
 
-	onClick_showCtrlWindow(type, callback){
-		this.popupCtrlWindow(type, callback);
-	}
-	onClick_hideCtrlWindow(){
-		this.hideCtrlWindow();
-	}
 
 	//=================
 	// Supportive Function
@@ -592,7 +581,10 @@ class CfgEditor {
 	//=================
 	// Confirm Window
 	popConfirm(text, callback){
+		$(this.viewPort).append(builder.confirmWindow());
+
 		var self = this;
+		$("#_cnfmwindow #_cnfm_content").append('<div class="message"></div>');
 		$("#_cnfmwindow .message").text(text);
 		$("#_cnfmwindow #_btn_cnfm_yes").on('click', function(){ self.hideConfirm(); callback(true); });
 		$("#_cnfmwindow #_btn_cnfm_no").on('click', function(){ self.hideConfirm(); callback(false); });
@@ -600,10 +592,10 @@ class CfgEditor {
 		$("#_blockScreen").fadeIn(200);
 	}
 	hideConfirm(){
-		$("#_cnfmwindow #_btn_cnfm_yes").off();
-		$("#_cnfmwindow #_btn_cnfm_no").off();
-		$("#_cnfmwindow").fadeOut(200);
 		$("#_blockScreen").fadeOut(200);
+		$("#_cnfmwindow").fadeOut(200, function(){
+			$("#_cnfmwindow").remove();
+		});
 	}
 
 	//=================
@@ -619,11 +611,8 @@ class CfgEditor {
 		}.bind(this));
 	}
 	popWindow_editTalk(arg, applyCallback){
-		var actorId = arg.actorId;
-		var content = arg.content;
-		var isOtherCh = arg.isOtherCh;
 		var title = MSG["Title_EditTalk"];
-		var content = builder.ctrlWin_editTalk(this.actorCfg, actorId, content, isOtherCh, this.generalCfg.isOnlyMainCh);
+		var content = builder.ctrlWin_editTalk(this.actorCfg, arg.actorId, arg.content, arg.isOtherCh, this.generalCfg.isOnlyMainCh);
 		//---
 		this.popupCtrlWindow(title, content, applyCallback);
 	}
@@ -631,19 +620,20 @@ class CfgEditor {
 		var title = MSG["Title_EditTitle"];
 		var content = builder.ctrlWin_editSectTitle(text);
 		//---
-		$("._ctrlwindow").css("height", "200px");
 		this.popupCtrlWindow(title, content, applyCallback);
 	}
 
 	popupCtrlWindow(title, content, callback){
-		$("._ctrlbar_title").text(title);
+		var self = this;
+		$("._ctrlwindow_title").text(title);
 		$("._ctrlbody").html(content);
-		$("#_btn_ctrlWinApply").on('click', callback);
+		$("._btn_ctrlWinApply").on('click', function(){ self.hideCtrlWindow(); callback(); });
+		$("#_blockScreen").fadeIn(200);
 		$("._ctrlwindow").fadeIn(200);
 	}
 	hideCtrlWindow(){
-		$("._ctrlwindow").css("height", "400px");
-		$("#_btn_ctrlWinApply").off();
+		$("._btn_ctrlWinApply").off();
+		$("#_blockScreen").fadeOut(200);
 		$("._ctrlwindow").fadeOut(200);
 	}
 	//=================
@@ -653,14 +643,13 @@ class CfgEditor {
 	}
 	createCtrlWindow(){
 		$(this.viewPort).append(builder.controlWindow());
-		$("._ctrlwindow .cross-stand-alone").on('click', this.onClick_hideCtrlWindow.bind(this));
-	}
-	createConfirmWindow(){
-		$(this.viewPort).append(builder.blockScreen());
-		$(this.viewPort).append(builder.confirmWindow());
+		var self = this;
+		$("._ctrlwindow .cross-stand-alone").on('click', this.hideCtrlWindow.bind(this));
+		$("._btn_ctrlWinCancel").on('click', this.hideCtrlWindow.bind(this));
 	}
 	createFrame(){
 		$(this.viewPort).append(builder.mainFrame());
+		$(this.viewPort).append(builder.blockScreen());
 		$("#btn_import").on('click',    this.clickImport.bind(this));
 		$("#btn_export").on('click',    this.clickExport.bind(this));
 

@@ -7,9 +7,10 @@
 		$.ajax({
 			type: "GET",
 			url: url,
-			dataType: 'json',
 			headers: {
-				"Authorization": `Bearer ${token}`
+				'accept': 'application/json,application/json',
+				'x-requested-with': 'XMLHttpRequest',
+				"Authorization": `Bearer ${token}`,
 			},
 			success: function (result){
 				console.log(result)
