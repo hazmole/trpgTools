@@ -7,7 +7,7 @@ class ImportAPI {
 		};
 	}
 
-	TRPGLine_GetChannels(roomId){
+	TRPGLine_GetChannels(roomId, callback){
 		var url = this.TRPGLine.getChannels;
 		var headers = {
 			'accept': 'application/json',
@@ -15,10 +15,10 @@ class ImportAPI {
 			'Authorization': `Bearer ${roomId}`,
 		};
 		this.send(url, headers, function(result){
-			console.log(result);
+			callback(result);
 		});
 	}
-	TRPGLine_GetScripts(roomId, channelArr){
+	TRPGLine_GetScripts(roomId, channelArr, callback){
 		var url = this.TRPGLine.getScripts + channelArr.join(',');
 		var headers = {
 			'accept': 'application/json',
@@ -26,11 +26,11 @@ class ImportAPI {
 			'Authorization': `Bearer ${roomId}`,
 		};
 		this.send(url, headers, function(result){
-			console.log(result);
+			callback(result);
 		});
 	}
 
-	send(url, header, successFunc){
+	send(url, headers, successFunc){
 		$.ajax({
 			type: "GET",
 			url,

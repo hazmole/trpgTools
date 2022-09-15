@@ -54,6 +54,19 @@ class TrpgParser{
 		this.isLoaded = true;
 	}
 
+	ParseFromAPI(type, data){
+		if(type!="trpg-line") throw 'Unknown source: '+type;
+
+		this.userMap = {};
+		this.script = [];
+		this.filename = data.roomName;
+		this.rawData  = data.scripts;
+
+		this.parseAPI_TRPGLine(data.mainChId, this.rawData);
+
+		this.isLoaded = true;
+	}
+
 	GetFilename(){
 		return this.filename;
 	}
@@ -313,6 +326,31 @@ class TrpgParser{
 			if(!ch) return true;
 			if(ch=="主頻道" || ch=="メイン" || ch=="Main") return true;
 			return false;
+		}
+	}
+
+	parseAPI_TRPGLine(mainChId, dataArr){
+		var self = this;
+
+		var sectionphArr = dataArr
+			.sort( (a,b) => a.created_at > b.created_at? 1: -1 )
+			.map( data => parseLine(data) );
+		this.script = sectionphArr;
+
+		//==============
+		function parseLine(data){
+			var channelId = data.channelId;
+			var actorname = data.name;
+			var color = (typeof data.style === "object" && data.style.color!=null)? data.style.color.substring(1): "ffffff";
+			var content = data.content;
+
+			var id = self.registerUser(actorname, color);
+			var line = new ScirptLine("talk", {
+				channel: channelId==mainChId? "main": "other",
+				actorId: id,
+				content: content.trim()
+			});
+			return line;
 		}
 	}
 }

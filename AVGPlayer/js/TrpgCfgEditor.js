@@ -157,8 +157,28 @@ class CfgEditor {
 
 	//============
 	// Main Button Event
+	clickTest(){
+		var self = this;
+		var token = "d80ecb0f0e3bfb267bb9c3c748db0c79";
+		this.importAPI.TRPGLine_GetChannels(token, function(ret){
+			//console.log(ret)
+			var chArr = ret.channels.map( ch => ch.id );
+			self.importAPI.TRPGLine_GetScripts(token, chArr, function(ret){
+				//console.log(ret);
+				self.parser.ParseFromAPI("trpg-line", {
+					roomName: "TRPG網頁版測試",
+					mainChId: chArr[0],
+					scripts: ret.messages
+				});
+				self.initConfig();
+				self.popupMsgBox("success", MSG["Success_ParseComplete"]);
+				self.goToPage("general");
+			})
+		});
+	}
 	clickImport(){
-		$('#_uploadFile').trigger('click');
+		//$('#_uploadFile').trigger('click');
+		this.clickTest();
 	}
 	clickExport(){
 		if(!this.doLoadedCheck()) return ;
