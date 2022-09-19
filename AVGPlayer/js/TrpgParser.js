@@ -341,7 +341,7 @@ class TrpgParser{
 		function parseLine(data){
 			var channelId = data.channelId;
 			var actorname = data.name;
-			var color = (typeof data.style === "object" && data.style.color!=null)? data.style.color.substring(1): "ffffff";
+			var color = (data.style && typeof data.style === "object" && data.style.color!=null)? data.style.color.substring(1): "ffffff";
 			var content = data.content;
 
 			var id = self.registerUser(actorname, color);
