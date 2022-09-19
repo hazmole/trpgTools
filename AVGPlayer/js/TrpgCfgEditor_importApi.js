@@ -2,7 +2,7 @@ class ImportAPI {
 	constructor(){
 		// TRPG-line
 		this.TRPGLine = {
-			getChannels: "https://test.trpgline.com/api/channels",
+			getChannels: "https://test.trpgline.com/api/room",
 			getScripts: "https://test.trpgline.com/api/messages?channels="
 		};
 	}
@@ -16,6 +16,8 @@ class ImportAPI {
 		};
 		this.send(url, headers, function(result){
 			callback(result);
+		}, function(error){
+			callback({ error: error.responseJSON.message });
 		});
 	}
 	TRPGLine_GetScripts(roomId, channelArr, callback){
@@ -27,16 +29,19 @@ class ImportAPI {
 		};
 		this.send(url, headers, function(result){
 			callback(result);
+		}, function(error){
+			callback({ error: error.responseJSON.message });
 		});
 	}
 
-	send(url, headers, successFunc){
+	send(url, headers, successFunc, failFunc){
 		$.ajax({
 			type: "GET",
 			url,
 			headers,
 
-			success: successFunc
+			success: successFunc,
+			error: failFunc
 		});
 	}
 

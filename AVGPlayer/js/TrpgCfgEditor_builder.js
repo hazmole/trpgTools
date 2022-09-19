@@ -1,7 +1,35 @@
 function builder(){}
 
 /*----------------
-  Page: Introduction
+  Page: Import
+ ----------------*/
+builder.pageR_import = function(){
+	return `
+		<h2>${MSG["Title_Import"]}</h2>
+		<div class="row">${MSG["Tip_import"]}</div>
+		
+		<div class="row"><b>${MSG["importMethod"]}</b>：<select id="_input_importMethod">
+			<option value="file">${MSG["importOpt_fromFile"]}</option>
+			<option value="api">${MSG["importOpt_fromApi"]}</option>
+		</select></div>
+		<hr>
+		<div id="_import_workspace"></div>`.fmt();
+}
+builder.subpage_importFromFile = function(){
+	return `
+		<div class="row"><input type="file" id="_input_uploadFile" accept=".html,.hzrp"></div>
+		<div class="row right"><button id="_btn_importFromFile" class="_btn_save">${MSG["btn_import"]}</button></div>`.fmt();
+}
+builder.subpage_importFromApi = function(){
+	return `
+		<div class="row">你可以從TRPG網頁版的房間網址找到你的房間Token。</div>
+		<div class="row"><img class="center" src="image/docs/import_01.jpg"></div>
+		<div class="row"><b>${MSG["roomToken"]}</b>：<input type="text" id="_input_trpgline_roomtoken" class="long" placeholder="${MSG["roomToken"]}"></div>
+		<div class="row right"><button id="_btn_importFromFile" class="_btn_save">${MSG["btn_import"]}</button></div>`.fmt();
+}
+
+/*----------------
+  Page: Document
  ----------------*/
 builder.pageL_introDocList = function(){
 	return `
@@ -27,7 +55,7 @@ builder.pageR_generalCfg = function(generalCfg){
 	var exportType = generalCfg.exportType;
 	return `
 		<h2>${MSG["btn_generalCfg"]}</h2>
-		<div class="row"><b>${MSG["replatTitle"]}</b>：<input type="text" id="_input_title" value="${title}" style="width:280px;"></div>
+		<div class="row"><b>${MSG["replayTitle"]}</b>：<input type="text" id="_input_title" value="${title}" style="width:280px;"></div>
 		<div class="row"><b>${MSG["exportFormat"]}</b>：<select id="_input_exportType">
 				<option value="HTML_SIMPLE" ${ exportType=="HTML_SIMPLE"? "selected": "" }>${MSG["fileType_HTML_simple"]}</option>
 				<option value="HTML_STD"    ${ exportType=="HTML_STD"? "selected": "" }>${MSG["fileType_HTML_standard"]}</option>
@@ -239,6 +267,9 @@ builder.confirmWindow = function(){
 		</div>`.fmt();
 }
 
+builder.loadingIcon = function(){
+	return `<div id="Loading"><div class="lds-dual-ring"></div></div>`;
+}
 builder.messageBox = function(){
 	return `<div id="_msgbox"></div>`;
 }

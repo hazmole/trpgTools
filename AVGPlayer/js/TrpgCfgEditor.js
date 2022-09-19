@@ -19,6 +19,7 @@ var MSG = {
 	"btn_methodAddChangeBg": "插入：設定背景",
 	"btn_methodAddHalt": "插入：停頓",
 	"btn_methodAddTitle": "插入：段落標題",
+	"Title_Import": "匯入檔案",
 	"Title_IntroDocList": "說明文件",
 	"Title_ActorList": "登場角色列表",
 	"Title_ScriptMethodList": "編輯腳本功能",
@@ -53,7 +54,11 @@ var MSG = {
 			<img src="image/docs/004.jpg">
 		<p>最後，把超連結整理到你喜歡的平台上，就大功告成了！<br>如果你想要讓更多人看到你的團錄，也可以把他們分享到<a href="https://sites.google.com/view/cosmosbravesbar">TRPG Brave's Bar</a>上喔！</p>
 			<img src="image/docs/005.jpg">`,
-	"replatTitle": "團錄標題",
+	"replayTitle": "團錄標題",
+	"importMethod": "匯入方式",
+	"importOpt_fromFile": "讀取團錄檔案",
+	"importOpt_fromApi": "從跑團平台匯入 (TRPG網頁版)",
+	"roomToken": "房間Token",
 	"exportFormat": "輸出格式",
 	"otherOptions": "其他選項",
 	"isOnlyShowMainCh": "只顯示主要頻道？<br>(這個選項不會刪除場外資訊，只是將其隱藏起來)",
@@ -73,8 +78,11 @@ var MSG = {
 	"cmd_halt": "指令：停頓",
 	"SOF": "文件開頭",
 	"EOF": "文件結尾",
+	"Error_NoFileSelected": "錯誤！你尚未選擇任何檔案！",
 	"Error_WrongFileFormat": "錯誤！無法辨識的檔案格式！",
 	"Error_NoFileLoaded": "錯誤！尚未上傳原始團錄！",
+	"Error_ImportFail_EmptyToken": "錯誤！請輸入房間Token！",
+	"Error_ImportFail_Unauthorized": "導入失敗！無效的房間Token！",
 	"Error_NoSelectedEntry": "請先選擇一個段落！",
 	"Error_UnderDeveloping": "尚未實裝功能",
 	"Warn_WebStorageExceedLimit": "警告！網頁儲存空間超過上限，自動儲存失敗。",
@@ -83,6 +91,8 @@ var MSG = {
 	"Success_SaveCfg": "設定已儲存！",
 	"Confrim_inheritCurrentActorCfg": "是否要沿用目前的角色設定？",
 	"Confrim_makeSureAction": "你確定要進行此操作嗎？",
+	"Tip_import": "你可以選擇讀取已輸出的團錄檔案、或是直接從跑團平台的房間匯入紀錄。<br>關於目前支援的格式和平台，請參見右上角的「說明」。",
+	"Tip_howToGetRoomToken_trpgLine": "你可以從TRPG網頁版的房間網址找到你的房間Token。",
 	"Tip_selectActor": "請點選左側的登場角色進行個別設定。",
 	"Tip_editScript": "請使用左側功能編輯你的團錄。",
 	"fileType_HZRP": ".hzrp (團錄播放器專用格式)",
@@ -110,7 +120,6 @@ class CfgEditor {
 
 	init(){
 		this.createFrame();
-		this.createUploadElem();
 		this.createMsgBox();
 		this.createCtrlWindow();
 
@@ -158,27 +167,10 @@ class CfgEditor {
 	//============
 	// Main Button Event
 	clickTest(){
-		var self = this;
-		var token = "d80ecb0f0e3bfb267bb9c3c748db0c79";
-		this.importAPI.TRPGLine_GetChannels(token, function(ret){
-			//console.log(ret)
-			var chArr = ret.channels.map( ch => ch.id );
-			self.importAPI.TRPGLine_GetScripts(token, chArr, function(ret){
-				//console.log(ret);
-				self.parser.ParseFromAPI("trpg-line", {
-					roomName: "TRPG網頁版測試",
-					mainChId: chArr[0],
-					scripts: ret.messages
-				});
-				self.initConfig();
-				self.popupMsgBox("success", MSG["Success_ParseComplete"]);
-				self.goToPage("general");
-			})
-		});
+		// For Testing New Function
 	}
 	clickImport(){
-		//$('#_uploadFile').trigger('click');
-		this.clickTest();
+		this.goToPage("import");
 	}
 	clickExport(){
 		if(!this.doLoadedCheck()) return ;
@@ -209,20 +201,21 @@ class CfgEditor {
 	goToPage(pageId){
 		this.clearPage();
 		switch(pageId){
-			case "info":    this.goToPage_info(); break;
+			case "import":  this.goToPage_Import(); break;
+			case "export":  this.goToPage_Export(); break;
 			case "general": this.goToPage_general(); break;
 			case "actor":   this.goToPage_actor(); break;
 			case "script":  this.goToPage_script(); break;
+			case "info":    this.goToPage_info(); break;
 		}
 	}
-	goToPage_info(){
-		$("#btn_to_info").addClass("active");
-		$("#_leftCol").append(builder.pageL_introDocList());
+
+	goToPage_Import(){
+		$("#btn_import").addClass("active");
+		$("#_rightCol").append(builder.pageR_import());
+		this.render_importFromFile()
 		//---
-		this.render_docIntro();
-		//---
-		$("#_doc_intro").on('click', this.render_docIntro.bind(this));
-		$("#_doc_publish").on('click', this.render_docHowToPublish.bind(this));
+		$("#_input_importMethod").on('change', this.onChange_renderImportMethod.bind(this));
 	}
 	goToPage_general(){
 		$("#btn_to_general").addClass("active");
@@ -255,6 +248,16 @@ class CfgEditor {
 		$("#_btn_addChBgCmd").on('click', this.onClick_addScriptCmd.bind(this, "changeBg"));
 		$("#_btn_addHaltCmd").on('click', this.onClick_addScriptCmd.bind(this, "halt"));
 	}
+	goToPage_info(){
+		$("#btn_to_info").addClass("active");
+		$("#_leftCol").append(builder.pageL_introDocList());
+		//---
+		this.render_docIntro();
+		//---
+		$("#_doc_intro").on('click', this.render_docIntro.bind(this));
+		$("#_doc_publish").on('click', this.render_docHowToPublish.bind(this));
+	}
+
 	clearPage(){
 		this.selectedPtr = null;
 		$("._btn").removeClass("active");
@@ -315,10 +318,36 @@ class CfgEditor {
 		$("#_doc_publish").addClass("active");
 	}
 
+	render_importFromFile(){
+		$("#_import_workspace").html(builder.subpage_importFromFile());
+		$("#_btn_importFromFile").on('click', this.onClick_importFromFile.bind(this));
+	}
+	render_importFromApi(){
+		$("#_import_workspace").html(builder.subpage_importFromApi());
+		$("#_btn_importFromFile").on('click', this.onClick_importFromApi.bind(this));
+	}
 
 
 	//=================
 	// Interact Method
+	onClick_importFromFile(){
+		var files = $("#_input_uploadFile").prop("files");
+		if(files.length==0){
+			this.popupMsgBox("error", MSG["Error_NoFileSelected"]);
+			return ;
+		}
+		this.uploadFile(files[0]);
+	}
+	onClick_importFromApi(){
+		var token = $("#_input_trpgline_roomtoken").val();
+		if(!token){
+			this.popupMsgBox("error", MSG["Error_ImportFail_EmptyToken"]);
+			return ;
+		}
+
+		this.importFromTRPGLine(token);
+	}
+
 	onClick_SaveGeneralCfg(){
 		var inputVal = {
 			title: $("#_input_title").val(),
@@ -563,6 +592,13 @@ class CfgEditor {
 				break;
 		}
 	}
+	onChange_renderImportMethod(event){
+		var importMethod = event.target.value;
+		switch(importMethod){
+			case "file": this.render_importFromFile(); break;
+			case "api": this.render_importFromApi(); break;
+		}
+	}
 
 
 	//=================
@@ -669,6 +705,7 @@ class CfgEditor {
 	}
 	createFrame(){
 		$(this.viewPort).append(builder.mainFrame());
+		$(this.viewPort).append(builder.loadingIcon());
 		$(this.viewPort).append(builder.blockScreen());
 		$("#btn_import").on('click',    this.clickImport.bind(this));
 		$("#btn_export").on('click',    this.clickExport.bind(this));
@@ -678,6 +715,16 @@ class CfgEditor {
 		$("#btn_to_script").on('click', this.clickGoToScript.bind(this));
 
 		$("#btn_to_info").on('click', this.clickGoToInfo.bind(this));
+	}
+	//=================
+	// Loading Block
+	popupLoading(){
+		$("#_blockScreen").fadeIn(200);
+		$("#Loading").fadeIn(200);
+	}
+	hideLoading(){
+		$("#Loading").fadeOut(200);
+		$("#_blockScreen").fadeOut(200);
 	}
 	//=================
 	// Message Box
@@ -727,6 +774,39 @@ class CfgEditor {
 	}
 
 	//================
+	// API
+	importFromTRPGLine(roomId){
+		var self = this;
+		this.popupLoading();
+		this.importAPI.TRPGLine_GetChannels(roomId, function(ret){
+			if(ret.error){
+				if(ret.error == "Unauthenticated.")
+					self.popupMsgBox("error", MSG["Error_ImportFail_Unauthorized"]);
+				self.hideLoading();
+				return ;
+			}
+
+			var roomName = ret.name;
+			var mainCh = ret.channels.filter( ch => ch.isInit )[0];
+			var chArr = ret.channels.map( ch => ch.id );
+
+			self.importAPI.TRPGLine_GetScripts(roomId, chArr, function(ret){
+				self.parser.ParseFromAPI("trpg-line", {
+					roomName: roomName,
+					mainChId: mainCh.id,
+					scripts: ret.messages
+				});
+				self.initConfig();
+				self.popupMsgBox("success", MSG["Success_ParseComplete"]);
+				self.goToPage("general");
+				self.saveToWebStorage();
+
+				self.hideLoading();
+			})
+		});
+	}
+
+	//================
 	// File I/O
 	downloadFile(){
 		var mode = this.generalCfg.exportType;
@@ -744,31 +824,22 @@ class CfgEditor {
 		var w = window.open('');
 		w.document.write(exportData.fileData);
 	}
-	createUploadElem(){
-		var elem = document.createElement('input');
-		elem.type = "file";
-		elem.id = "_uploadFile";
-		elem.setAttribute("accept", ".html,.hzrp");
-		document.body.append(elem);
-
+	uploadFile(file){
 		var self = this;
-		$(elem).on('change', (event) => {
-			const file = event.target.files[0];
-			var filename = file.name;
-
-			var fr = new FileReader();
-			fr.onload = function(){
-				if(Object.keys(self.actorCfg).length>0){
-					self.popConfirm(MSG["Confrim_inheritCurrentActorCfg"], function(retVal){
-						self.Parse(filename, fr.result, retVal);
-					});
-				} else {
-					self.Parse(filename, fr.result, false);
-				}
-				
+		var filename = file.name;
+		
+		var fr = new FileReader();
+		fr.onload = function(){
+			if(Object.keys(self.actorCfg).length>0){
+				self.popConfirm(MSG["Confrim_inheritCurrentActorCfg"], function(retVal){
+					self.Parse(filename, fr.result, retVal);
+				});
+			} else {
+				self.Parse(filename, fr.result, false);
 			}
-			fr.readAsText(file);
-		});
+		}
+		fr.readAsText(file);
 	}
+
 }
 
