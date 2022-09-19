@@ -776,6 +776,11 @@ class CfgEditor {
 	//================
 	// API
 	importFromTRPGLine(roomId){
+		if(!roomId.match(/^[\w\d]+$/)){
+			this.popupMsgBox("error", MSG["Error_ImportFail_Unauthorized"]);
+			return ;
+		}
+
 		var self = this;
 		this.popupLoading();
 		this.importAPI.TRPGLine_GetChannels(roomId, function(ret){
@@ -787,7 +792,7 @@ class CfgEditor {
 			}
 
 			var roomName = ret.name;
-			var mainCh = ret.channels.filter( ch => ch.isInit )[0];
+			var mainCh = ret.channels.filter( ch => ch.isInit && ch.type == "story" )[0];
 			var chArr = ret.channels.map( ch => ch.id );
 
 			self.importAPI.TRPGLine_GetScripts(roomId, chArr, function(ret){
