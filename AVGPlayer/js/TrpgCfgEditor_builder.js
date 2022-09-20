@@ -7,7 +7,6 @@ builder.pageR_import = function(){
 	return `
 		<h2>${MSG["Title_Import"]}</h2>
 		<div class="row">${MSG["Tip_import"]}</div>
-		
 		<div class="row"><b>${MSG["importMethod"]}</b>：<select id="_input_importMethod">
 			<option value="file">${MSG["importOpt_fromFile"]}</option>
 			<option value="api">${MSG["importOpt_fromApi"]}</option>
@@ -22,10 +21,46 @@ builder.subpage_importFromFile = function(){
 }
 builder.subpage_importFromApi = function(){
 	return `
-		<div class="row">你可以從TRPG網頁版的房間網址找到你的房間Token。</div>
+		<div class="row">${MSG["roomToken_desc"]}</div>
 		<div class="row"><img class="center" src="image/docs/import_01.jpg"></div>
 		<div class="row"><b>${MSG["roomToken"]}</b>：<input type="text" id="_input_trpgline_roomtoken" class="long" placeholder="${MSG["roomToken"]}"></div>
 		<div class="row right"><button id="_btn_importFromFile" class="_btn_save">${MSG["btn_import"]}</button></div>`.fmt();
+}
+
+/*----------------
+  Page: Export
+ ----------------*/
+builder.pageR_export = function(){
+	return `
+		<h2>${MSG["Title_Export"]}</h2>
+		<div class="row">${MSG["Tip_export"]}</div>
+		<div class="row"><b>${MSG["exportFormat"]}</b>：
+		<select id="_input_exportFormat">
+				<option value="HTML_SIMPLE">${MSG["fileType_HTML_simple"]}</option>
+				<option value="HTML_STD">${MSG["fileType_HTML_standard"]}</option>
+				<option value="HZRP">${MSG["fileType_HZRP"]}</option>
+		</select></div>
+		<hr>
+		<div id="_export_workspace"></div>
+		<div class="row right"><button id="_btn_exportToFile" class="_btn_save">${MSG["btn_export"]}</button></div>`.fmt();
+}
+builder.subpage_exportFormatPreview = function(mode){
+	var imgUrl = "", desc = "";
+	switch(mode){
+		case "HTML_SIMPLE":
+			imgUrl="export_01.jpg";
+			desc = MSG["exportFormat_htmlSimple_desc"];
+			break;
+		case "HTML_STD":
+			imgUrl = "export_02.jpg";
+			desc = MSG["exportFormat_htmlStandard_desc"];
+			break;
+		case "HZRP":
+			imgUrl = "export_03.jpg";
+			desc = MSG["exportFormat_hzrp_desc"];
+			break;
+	}
+	return `<div class="row"><img src="image/docs/${imgUrl}" class="center"></div><div class="row" style="text-align:center;">${desc}</div>`;
 }
 
 /*----------------
@@ -56,12 +91,6 @@ builder.pageR_generalCfg = function(generalCfg){
 	return `
 		<h2>${MSG["btn_generalCfg"]}</h2>
 		<div class="row"><b>${MSG["replayTitle"]}</b>：<input type="text" id="_input_title" value="${title}" style="width:280px;"></div>
-		<div class="row"><b>${MSG["exportFormat"]}</b>：<select id="_input_exportType">
-				<option value="HTML_SIMPLE" ${ exportType=="HTML_SIMPLE"? "selected": "" }>${MSG["fileType_HTML_simple"]}</option>
-				<option value="HTML_STD"    ${ exportType=="HTML_STD"? "selected": "" }>${MSG["fileType_HTML_standard"]}</option>
-				<option value="HZRP"        ${ exportType=="HZRP"? "selected": "" }>${MSG["fileType_HZRP"]}</option>
-			</select>
-		</div>
 		<div class="row"><b>${MSG["otherOptions"]}：</b></div>
 		<div class="row flexST">
 			<input type="checkbox" id="_input_isOnlyMainCh" ${isOnlyMainCh? "checked='checked'":""}>

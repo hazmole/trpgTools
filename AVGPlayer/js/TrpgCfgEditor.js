@@ -19,13 +19,16 @@ var MSG = {
 	"btn_methodAddChangeBg": "插入：設定背景",
 	"btn_methodAddHalt": "插入：停頓",
 	"btn_methodAddTitle": "插入：段落標題",
+
 	"Title_Import": "匯入檔案",
+	"Title_Export": "輸出檔案",
 	"Title_IntroDocList": "說明文件",
 	"Title_ActorList": "登場角色列表",
 	"Title_ScriptMethodList": "編輯腳本功能",
 	"Title_EditBgImg": "設定背景圖片",
 	"Title_EditTalk": "設定對話",
 	"Title_EditTitle": "設定段落標題",
+
 	"introDoc": `<u>此工具以及輸出成品皆使用 CC-BY 4.0 授權，可以自由散佈使用。</u>
 		<p>此工具能夠將其他跑團平台輸出的團錄轉換成播放器可用的格式。<br/>
 		目前支援的格式：
@@ -54,12 +57,16 @@ var MSG = {
 			<img src="image/docs/004.jpg">
 		<p>最後，把超連結整理到你喜歡的平台上，就大功告成了！<br>如果你想要讓更多人看到你的團錄，也可以把他們分享到<a href="https://sites.google.com/view/cosmosbravesbar">TRPG Brave's Bar</a>上喔！</p>
 			<img src="image/docs/005.jpg">`,
-	"replayTitle": "團錄標題",
 	"importMethod": "匯入方式",
 	"importOpt_fromFile": "讀取團錄檔案",
 	"importOpt_fromApi": "從跑團平台匯入 (TRPG網頁版)",
 	"roomToken": "房間Token",
+	"roomToken_desc": "你可以從TRPG網頁版的房間網址找到你的房間Token。",
 	"exportFormat": "輸出格式",
+	"exportFormat_htmlSimple_desc": "簡化的團錄網頁，無角色頭像，排版間隔較密集。",
+	"exportFormat_htmlStandard_desc": "標準的團錄網頁，有角色頭像，排版間隔較寬，場外對話靠右縮排。",
+	"exportFormat_hzrp_desc": "供播放器使用的特殊格式。",
+	"replayTitle": "團錄標題",
 	"otherOptions": "其他選項",
 	"isOnlyShowMainCh": "只顯示主要頻道？<br>(這個選項不會刪除場外資訊，只是將其隱藏起來)",
 	"talk_actor": "發話角色",
@@ -92,6 +99,7 @@ var MSG = {
 	"Confrim_inheritCurrentActorCfg": "是否要沿用目前的角色設定？",
 	"Confrim_makeSureAction": "你確定要進行此操作嗎？",
 	"Tip_import": "你可以選擇讀取已輸出的團錄檔案、或是直接從跑團平台的房間匯入紀錄。<br>關於目前支援的格式和平台，請參見右上角的「說明」。",
+	"Tip_export": "將編輯後的團錄輸出成重新排版過的網頁、或是供「播放器」使用的特殊格式(.hzrp)。",
 	"Tip_howToGetRoomToken_trpgLine": "你可以從TRPG網頁版的房間網址找到你的房間Token。",
 	"Tip_selectActor": "請點選左側的登場角色進行個別設定。",
 	"Tip_editScript": "請使用左側功能編輯你的團錄。",
@@ -174,7 +182,8 @@ class CfgEditor {
 	}
 	clickExport(){
 		if(!this.doLoadedCheck()) return ;
-		this.downloadFile();
+		this.goToPage("export");
+		//this.downloadFile();
 	}
 	clickPreview(){
 		if(!this.doLoadedCheck()) return ;
@@ -216,6 +225,14 @@ class CfgEditor {
 		this.render_importFromFile()
 		//---
 		$("#_input_importMethod").on('change', this.onChange_renderImportMethod.bind(this));
+	}
+	goToPage_Export(){
+		$("#btn_export").addClass("active");
+		$("#_rightCol").append(builder.pageR_export());
+		//---
+		this.render_exportFormat();
+		$("#_input_exportFormat").on('change', this.render_exportFormat.bind(this));
+		$("#_btn_exportToFile").on('click', this.onClick_Export.bind(this));
 	}
 	goToPage_general(){
 		$("#btn_to_general").addClass("active");
@@ -327,6 +344,10 @@ class CfgEditor {
 		$("#_btn_importFromFile").on('click', this.onClick_importFromApi.bind(this));
 	}
 
+	render_exportFormat(){
+		var mode = $("#_input_exportFormat").val();
+		$("#_export_workspace").html(builder.subpage_exportFormatPreview(mode));
+	}
 
 	//=================
 	// Interact Method
@@ -346,6 +367,11 @@ class CfgEditor {
 		}
 
 		this.importFromTRPGLine(token);
+	}
+
+	onClick_Export(){
+		var mode = $("#_input_exportFormat").val();
+		this.downloadFile(mode);
 	}
 
 	onClick_SaveGeneralCfg(){
@@ -743,6 +769,8 @@ class CfgEditor {
 			actors: this.actorCfg,
 			script: this.scriptCfg,
 		};
+		if(obj.general.exportType) delete obj.general.exportType;
+
 		try{
 			localStorage.setItem('rpCfgSave', JSON.stringify(obj));
 		} catch(e){
@@ -813,8 +841,7 @@ class CfgEditor {
 
 	//================
 	// File I/O
-	downloadFile(){
-		var mode = this.generalCfg.exportType;
+	downloadFile(mode){
 		var exportData = this.exporter.Export(mode, this);
 
 		var elem = document.createElement('a');
@@ -824,7 +851,7 @@ class CfgEditor {
 		elem.click();
 	}
 	previewReplay(){
-		var mode = (this.generalCfg.exportType=="HTML_SIMPLE")? "HTML_SIMPLE": "HTML_STD";
+		var mode = "HTML_STD";
 		var exportData = this.exporter.Export(mode, this);
 		var w = window.open('');
 		w.document.write(exportData.fileData);
