@@ -61,7 +61,7 @@ var MSG = {
 	"importOpt_fromFile": "讀取團錄檔案",
 	"importOpt_fromApi": "從跑團平台匯入 (TRPG網頁版)",
 	"roomToken": "房間Token",
-	"roomToken_desc": "你可以從TRPG網頁版的房間網址找到你的房間Token。",
+	"roomToken_desc": "這個工具會擷取房間內主故事頻道和主聊天頻道的內容。<br>你可以從TRPG網頁版的房間網址找到你的房間Token。",
 	"exportFormat": "輸出格式",
 	"exportFormat_htmlSimple_desc": "簡化的團錄網頁，無角色頭像，排版間隔較密集。",
 	"exportFormat_htmlStandard_desc": "標準的團錄網頁，有角色頭像，排版間隔較寬，場外對話靠右縮排。",
@@ -821,7 +821,7 @@ class CfgEditor {
 
 			var roomName = ret.name;
 			var mainCh = ret.channels.filter( ch => ch.isInit && ch.type == "story" )[0];
-			var chArr = ret.channels.map( ch => ch.id );
+			var chArr = ret.channels.filter( ch => ch.isInit ).map( ch => ch.id );
 
 			self.importAPI.TRPGLine_GetScripts(roomId, chArr, function(ret){
 				self.parser.ParseFromAPI("trpg-line", {

@@ -1,4 +1,4 @@
-var VERSION = "hazmole_v0.92";
+var VERSION = "hazmole_v1.0";
 
 class CfgExporter {
 	constructor(){}
