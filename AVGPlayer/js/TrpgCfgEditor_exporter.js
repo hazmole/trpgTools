@@ -115,6 +115,12 @@ class CfgExporter {
 	._actorWords { margin:5px; background:#2a2a2a; font-size:1.1rem; padding:10px; height:calc(100% - 60px); border-radius:5px; }
 	._sectTitle { border-radius:5px; margin-bottom:5px; }
 
+	@media only screen and (max-width: 400px) {
+		._leftCol { width:100px; }
+		._rightCol { width:calc(100% - 100px); }
+		._actorImg { margin:35px 0 5px 10px; width: 85px; height: 85px; }
+	}
+
 	._talk.otherCh { width:calc(50%); text-align:right; margin-left:auto; }
 	._talk.otherCh ._leftCol { display:none; }
 	._talk.otherCh ._rightCol { width:100%; }
