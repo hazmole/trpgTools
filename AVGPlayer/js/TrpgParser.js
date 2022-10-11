@@ -8,7 +8,7 @@ class TrpgParser{
 			"ddfFotmat": new RegExp(/(^\[(.*?)\])?<font color='#([\w\d]{6})'><b>(.*?)<\/b>：(.*?)<\/font>/, 'smg'),
 
 			"isHZWEB": new RegExp(/<version>hazmole_v(.*?)<\/version>/),
-			"hzweb_actorCss": new RegExp(/\._actor_(\d+) ._actorName { color: #([\w\d]{6}); }\n\._actor_\d+ ._actorName::after { content:"(.*?)"; }\n._actor_\d+ ._actorImg { background-image:url\((.*?)\); }/, 'g'),
+			"hzweb_actorCss": new RegExp(/\._actor_(\d+) ._actorName { color: #([\w\d]{6}); }.*?\._actor_\d+ ._actorName::after { content:"(.*?)"; }.*?._actor_\d+ ._actorImg { background-image:url\((.*?)\); }/, 'sg'),
 			"hzwebFormat": new RegExp(/<div class="_script" data-type="(\w+)">(.*?)<\/div><!--EOS-->/, 'smg'),
 			"hzweb_getTitle": new RegExp(/<title>(.*?)<\/title>/, 's'),
 			"hzweb_getBgImg": new RegExp(/<div class="_hidden">(.*?)<\/div>/, 's'),
@@ -187,6 +187,11 @@ class TrpgParser{
 		var isOtherChHidden = style.match(/\.otherCh{ display:none; }/)!=null;
 		this.generalCfg.title = title;
 		this.generalCfg.isOnlyMainCh = isOtherChHidden;
+
+		console.log(style)
+		console.log(this.regList["hzweb_actorCss"])
+		console.log(style.match(this.regList["hzweb_actorCss"]))
+
 
 		var actorArr = style.match(this.regList["hzweb_actorCss"])
 			.map( actor => parseActorStyle(actor) );
