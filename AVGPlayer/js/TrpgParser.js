@@ -329,7 +329,7 @@ class TrpgParser{
 		}
 		function isMainChannel(ch){
 			if(!ch) return true;
-			if(ch=="主頻道" || ch=="メイン" || ch=="Main") return true;
+			if(ch=="主頻道" || ch=="メイン" || ch=="Main" || ch=="main") return true;
 			return false;
 		}
 	}
