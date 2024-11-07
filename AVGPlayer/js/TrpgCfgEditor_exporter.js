@@ -55,6 +55,7 @@ class CfgExporter {
 
 	getActorStyle(actorObj){
 		return `._actor_${actorObj.id} ._actorName { color: #${actorObj.color}; }
+				._actor_${actorObj.id} ._actorName::after { content:"${actorObj.name}"; }
 				._actor_${actorObj.id} ._actorImg { background-image:url(${actorObj.imgUrl}); } `.fmt();
 	}
 	getScriptEntry(actorMap, scriptObj){
@@ -89,7 +90,7 @@ class CfgExporter {
 					<div class="_actorImg ${imgUrl==""? "_hidden": ""}"></div>
 				</div>
 				<div class="_rightCol">
-					<div class="_actorName">${actorObj.name}</div>
+					<div class="_actorName"></div>
 					<div class="_actorWords">${scriptObj.content}</div>
 				</div>
 			</div>`
