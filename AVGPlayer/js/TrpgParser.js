@@ -11,7 +11,8 @@ class TrpgParser{
 			"hzweb_actorCss": new RegExp(/\._actor_(\d+) ._actorName { color: #([\w\d]{6}); }.*?\._actor_\d+ ._actorName::after { content:"(.*?)"; }.*?._actor_\d+ ._actorImg { background-image:url\((.*?)\); }/, 'sg'),
 			"hzwebFormat": new RegExp(/<div class="_script" data-type="(\w+)">(.*?)<\/div><!--EOS-->/, 'smg'),
 			"hzweb_getTitle": new RegExp(/<title>(.*?)<\/title>/, 's'),
-			"hzweb_getBgImg": new RegExp(/<div class="_hidden">(.*?)<\/div>/, 's'),
+			"hzweb_getBgImg": new RegExp(/<div class="((_bgImg)|(_hidden))">(.*?)<\/div>/, 's'),
+			"hzweb_getBgImgDom": new RegExp(/<img src="(.*?)">/, 's'),
 			"hzweb_getSectTitle": new RegExp(/<div class="_sectTitle">(.*?)<\/div>/, 's'),
 			"hzweb_getTalk": new RegExp(/<div class="_talk (.*?) _actor_(\d+)">/, 'sg'),
 			"hzweb_getTalkContent": new RegExp(/<div class="_actorWords">(.*?)<\/div>/, 'smg'),
@@ -239,10 +240,14 @@ class TrpgParser{
 			};
 		}
 		function parseInfo_changeBg(data){
-			var bgImgUrl = data.match(self.regList['hzweb_getBgImg'])[1];
-			return {
-				bgUrl: bgImgUrl
-			};
+			var bgImgContent = data.match(self.regList['hzweb_getBgImg'])[1];
+			var bgUrl;
+			if(bgImgContent.match(self.regList['hzweb_getBgImgDom'])!=null) {
+				bgUrl = bgImgContent.match(self.regList['hzweb_getBgImgDom'])[1];
+			} else {
+				bgUrl = bgImgContent;
+			}
+			return { bgUrl };
 		}
 		function parseInfo_talk(data){
 			var matchMap = [];

@@ -55,7 +55,6 @@ class CfgExporter {
 
 	getActorStyle(actorObj){
 		return `._actor_${actorObj.id} ._actorName { color: #${actorObj.color}; }
-				._actor_${actorObj.id} ._actorName::after { content:"${actorObj.name}"; }
 				._actor_${actorObj.id} ._actorImg { background-image:url(${actorObj.imgUrl}); } `.fmt();
 	}
 	getScriptEntry(actorMap, scriptObj){
@@ -77,7 +76,7 @@ class CfgExporter {
 			return `<div class="_halt"></div>`;
 		}
 		function bgCmd(){
-			return `<div class="_hidden">${scriptObj.bgUrl}</div>`;
+			return `<div class="_bgImg"><img src="${scriptObj.bgUrl}"></div>`;
 		}
 		function talkCmd(actorMap, scriptObj){
 			var id = scriptObj.actorId;
@@ -90,7 +89,7 @@ class CfgExporter {
 					<div class="_actorImg ${imgUrl==""? "_hidden": ""}"></div>
 				</div>
 				<div class="_rightCol">
-					<div class="_actorName"></div>
+					<div class="_actorName">${actorObj.name}</div>
 					<div class="_actorWords">${scriptObj.content}</div>
 				</div>
 			</div>`
@@ -107,6 +106,8 @@ class CfgExporter {
 		function standardWebStyle(){
 			return `
 	._halt { padding:30px 0; }
+	._bgImg { text-align: center; }
+	._bgImg img { max-width: 800px; }
 	._talk { margin:5px 0; display:flex; border:1px solid black; background:#1e1e1e; color:#eee; width:100%; max-width:1080px; border-radius:5px; }
 	._leftCol { width:122px; }
 	._rightCol { width:calc(100% - 126px); }
@@ -130,6 +131,8 @@ class CfgExporter {
 		function simpleWebStyle(){
 			return `
 	._halt { padding:40px 0; }
+	._bgImg { text-align: center; }
+	._bgImg img { max-width: 800px; }
 	._talk { margin:0; display:flex; border-bottom:1px solid #3a3a3a; background:#1e1e1e; color:#eee; width:100%; max-width:1080px; }
 	._leftCol { width: 20px; }
 	._rightCol { width:100%; }
