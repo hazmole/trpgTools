@@ -1,0 +1,45 @@
+:root {
+  --position-x1: 10%;
+  --position-x2: 25%;
+  --position-x3: 50%;
+  --position-x4: 75%;
+  --position-x5: 90%;
+  --position-y1: 10%;
+  --position-y2: 20%;
+  --position-y3: 30%;
+  --position-y4: 50%;
+  --position-y5: 60%;
+  --position-y6: 70%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+
+  background-color: #10100f;
+  color: beige;
+}
+h2 { text-align: center; color: #ffc35a; }
+
+
+#CandlePool {
+  flex-grow: 1;
+  position: relative;
+}
+
+.Candle {
+  position: absolute;
+}
+
+#Candle-0 { left: var(--position-x3); top: var(--position-y1); }
+#Candle-1 { left: var(--position-x2); top: var(--position-y2); }
+#Candle-2 { left: var(--position-x4); top: var(--position-y2); }
+#Candle-3 { left: var(--position-x1); top: var(--position-y3); }
+#Candle-4 { left: var(--position-x5); top: var(--position-y3); }
+#Candle-5 { left: var(--position-x1); top: var(--position-y4); }
+#Candle-6 { left: var(--position-x5); top: var(--position-y4); }
+#Candle-7 { left: var(--position-x2); top: var(--position-y5); }
+#Candle-8 { left: var(--position-x4); top: var(--position-y5); }
+#Candle-9 { left: var(--position-x3); top: var(--position-y6); }
