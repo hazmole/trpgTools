@@ -12,14 +12,17 @@ function initialize() {
 }
 
 function resetCandles() {
-  TimerArr.length = 0;
+  if (TimerArr.length == 0) {
+    for(let i=0; i<10; i++) TimerArr.push({});
+  }
+
   for(let i=0; i<10; i++) {
+    if(TimerArr[i].handler) clearInterval(TimerArr[i].handler);
+
     const offset = Math.floor(((Math.random() + Math.random()) - 1) * Config.randomizeRange);
-    TimerArr.push({
-      isActive: false,
-      handler: null,
-      remainTime: Config.averageTime + offset,
-    });
+    TimerArr[i].isActive = false;
+    TimerArr[i].handler = null;
+    TimerArr[i].remainTime = Config.averageTime + offset;
   }
 }
 
@@ -55,6 +58,7 @@ function countDown(idx) {
   const timerObj = TimerArr[idx];
   timerObj.remainTime -= Config.frequency;
 
+  console.log('tick')
   if (timerObj.remainTime <= 0) {
     timerObj.isActive = false;
     timerObj.remainTime = 0;
