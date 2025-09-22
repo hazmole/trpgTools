@@ -1,14 +1,15 @@
 :root {
-  --position-x1: 10%;
-  --position-x2: 25%;
+  --position-x1: 25%;
+  --position-x2: 35%;
   --position-x3: 50%;
-  --position-x4: 75%;
-  --position-x5: 90%;
-  --position-y1: 10%;
-  --position-y2: 20%;
-  --position-y3: 30%;
+  --position-x4: 65%;
+  --position-x5: 75%;
+
+  --position-y1: 5%;
+  --position-y2: 10%;
+  --position-y3: 25%;
   --position-y4: 50%;
-  --position-y5: 60%;
+  --position-y5: 65%;
   --position-y6: 70%;
 }
 
@@ -21,7 +22,38 @@ body {
   background-color: #10100f;
   color: beige;
 }
-h2 { text-align: center; color: #ffc35a; }
+h1 { text-align: center; color: #ffc35a; }
+
+
+#ButtonRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#ButtonRow > .btnLabel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  padding-right: 5px;
+}
+#ButtonRow > .btnLabel > svg {
+  width: 32px; height: 32px;
+}
+#ButtonRow > .btnLabel:hover {
+  box-shadow: 0 0 20px 10px #fff;
+  background-color: #fff;
+  color: black;
+  border-radius: 10%;
+}
+
+#ConfigPanel { display: none; }
+#ConfigPanel.Active {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
 
 
 #CandlePool {
@@ -31,7 +63,33 @@ h2 { text-align: center; color: #ffc35a; }
 
 .Candle {
   position: absolute;
+  width:150px;
+  height: 160px;
+  background-size: 100%;
+  margin-left: -75px;
+  cursor: pointer;
 }
+.Candle > .img {
+  width:150px;
+  height: 160px;
+  background-size: 100%;
+}
+.Candle > .halo {
+  position: relative;
+  z-index: -1;
+  width: 0;
+  height: 0;
+  top: 70px;
+  left: 70px;
+}
+
+.Candle       > .img { background-image: url('img/candle-out.png'); }
+.Candle.Light > .img { background-image: url('img/candle-light.png'); }
+.Candle.BurnOut > .img { background-image: url('img/candle-burned.png'); }
+.Candle.Light > .halo {
+  box-shadow: 0 0 30px 25px #ffbb0c, 0 0 100px 40px #ff8d00;
+}
+
 
 #Candle-0 { left: var(--position-x3); top: var(--position-y1); }
 #Candle-1 { left: var(--position-x2); top: var(--position-y2); }
