@@ -1,5 +1,6 @@
 const TimerArr = [];
 const Config = {
+  isInited: false,
   averageTime: 60*60*5,  // 5 hr
   randomizeRange: 60*30, // 30 mins
   frequency: 0.5,        // 500 ms
@@ -58,7 +59,7 @@ function countDown(idx) {
   const timerObj = TimerArr[idx];
   timerObj.remainTime -= Config.frequency;
 
-  console.log('tick')
+  // console.log('tick')
   if (timerObj.remainTime <= 0) {
     timerObj.isActive = false;
     timerObj.remainTime = 0;
@@ -72,37 +73,90 @@ function countDown(idx) {
 
 window.onload = initialize;
 
+/*==============
+ * Config */
+function openConfigPanel() {
+  const elems = [
+    document.getElementById('BackScreen'),
+    document.getElementById('Dialog'),
+  ];
+  elems.forEach(elem => {
+    elem.style.display = 'block';
+  });
+}
+function closeConfigPanel() {
+  const elems = [
+    document.getElementById('BackScreen'),
+    document.getElementById('Dialog'),
+  ];
+  elems.forEach(elem => {
+    elem.style.display = 'none';
+  });
+}
 
 function toggleConfigPanel() {
   const elem = document.getElementById("ConfigPanel");
   elem.classList.toggle("Active")
 }
 function initConfig() {
-  const averageElem = document.getElementById("averageTime");
-  const offsetElem = document.getElementById("offsetTime");
+  const averageElems = {
+    hour:   document.getElementById("averageTime-hr"),
+    minute: document.getElementById("averageTime-mn"),
+    second: document.getElementById("averageTime-sc"),
+  };
+  const offsetElems = {
+    hour:   document.getElementById("randomRange-hr"),
+    minute: document.getElementById("randomRange-mn"),
+    second: document.getElementById("randomRange-sc"),
+  };
 
-  averageElem.value = Config.averageTime;
-  offsetElem.value = Config.randomizeRange;
+  averageElems.second.value = Config.averageTime % 60;
+  averageElems.minute.value = Math.floor(Config.averageTime / 60) % 60;
+  averageElems.hour.value   = Math.floor(Config.averageTime / 60 / 60);
+
+  offsetElems.second.value = Config.randomizeRange % 60;
+  offsetElems.minute.value = Math.floor(Config.randomizeRange / 60) % 60;
+  offsetElems.hour.value   = Math.floor(Config.randomizeRange / 60 / 60);
 }
-function setConfig() {
-  const averageElem = document.getElementById("averageTime");
-  const offsetElem = document.getElementById("offsetTime"); 
+function setConfig(isInit) {
+  const averageElems = {
+    hour:   document.getElementById("averageTime-hr"),
+    minute: document.getElementById("averageTime-mn"),
+    second: document.getElementById("averageTime-sc"),
+  };
+  const offsetElems = {
+    hour:   document.getElementById("randomRange-hr"),
+    minute: document.getElementById("randomRange-mn"),
+    second: document.getElementById("randomRange-sc"),
+  };
 
+  var averageTime, randomizeRange = 0;
   try {
-    parseInt(averageElem.value);
-    parseInt(offsetElem.value);
+    averageTime = parseInt(averageElems.hour.value) * 3600
+                + parseInt(averageElems.minute.value) * 60
+                + parseInt(averageElems.second.value);
+    randomizeRange  = parseInt(offsetElems.hour.value) * 3600
+                    + parseInt(offsetElems.minute.value) * 60
+                    + parseInt(offsetElems.second.value);
   } catch(e) {
     console.error(e);
     alert("輸入值必須為整數！");
     return ;
   }
   
-  var yes = confirm('你確定要重設蠟燭設定嗎？\n這會導致當前的蠟燭狀態被重置。');
-  if (!yes) return ;
+  if (Config.isInited) {
+    var yes = confirm('你確定要重設蠟燭設定嗎？\n這會導致當前的蠟燭狀態被重置。');
+    if (!yes) return ;
+  } else {
+    Config.isInited = true;
+  }
 
-  Config.averageTime = parseInt(averageElem.value);
-  Config.randomizeRange = parseInt(offsetElem.value);
+  Config.averageTime = averageTime;
+  Config.randomizeRange = randomizeRange;
 
+  closeConfigPanel();
   resetCandles();
   renderCandles();
+
+  console.log(TimerArr)
 }

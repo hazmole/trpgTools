@@ -101,3 +101,49 @@ h1 { text-align: center; color: #ffc35a; }
 #Candle-7 { left: var(--position-x2); top: var(--position-y5); }
 #Candle-8 { left: var(--position-x4); top: var(--position-y5); }
 #Candle-9 { left: var(--position-x3); top: var(--position-y6); }
+
+
+.TimePicker {
+  width: 40px;
+  text-align: center;
+  font-size: 16px;
+  background-color: #462a1d;
+  color: white;
+}
+
+
+/*==============
+ * Popup Windows */
+.BlackLayout {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+  width: calc(100vw);
+  height: calc(100vh);
+
+  background: rgba(0, 0, 0, 0.5);
+}
+.Dialog {
+  position: fixed;
+  top: 45%; left: 50%;
+  z-index: 101;
+  width: 300px;
+  margin-left: -150px;
+
+  padding: 10px 20px;
+  background-color: #131010;
+  border-radius: 10px;
+  box-shadow: 0 0 30px 5px #ffbb0c;
+}
+
+.Dialog .title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.Dialog .btn {
+  background-color: #d3d3d3;
+  padding: 5px 10px;
+}
+.Dialog .btn:hover {
+  background-color: #f8dd91;
+}
