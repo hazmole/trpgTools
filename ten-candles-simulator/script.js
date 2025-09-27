@@ -24,6 +24,10 @@ function resetCandles() {
     TimerArr[i].isActive = false;
     TimerArr[i].handler = null;
     TimerArr[i].remainTime = Config.averageTime + offset;
+
+    const se = new Audio("./se/ES_Wind_Soft_Short_02.wav");
+    TimerArr[i].se = se;
+    TimerArr[i].se.volume = .3;
   }
 }
 
@@ -68,6 +72,7 @@ function countDown(idx) {
     const elem = document.getElementById(`Candle-${idx}`);
     elem.classList.remove("Light");
     elem.classList.add("BurnOut");
+    timerObj.se.play();
   }
 }
 
@@ -157,6 +162,8 @@ function setConfig(isInit) {
   closeConfigPanel();
   resetCandles();
   renderCandles();
-
-  console.log(TimerArr)
+  
+  const SoundEffect = new Audio("./se/ES_Wind_Soft_Short_02.wav");
+  SoundEffect.volume = 0.3;
+  SoundEffect.play();
 }
